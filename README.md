@@ -21,4 +21,4 @@ npm run build
 ```
 
 ### 更多配置选项
-差坑 [https://cli.vuejs.org](https://cli.vuejs.org/config/).
+查看 [https://cli.vuejs.org](https://cli.vuejs.org/config/).
