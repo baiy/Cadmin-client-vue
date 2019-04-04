@@ -100,7 +100,7 @@
                     h('span', [
                         h('Icon', {
                             props: {
-                                type: data.menu['url'] ? 'ios-paper-outline' : 'ios-folder-outline'
+                                type: data.menu['icon'] ? data.menu['icon'] : 'ios-paper-outline'
                             },
                             style: {
                                 marginRight: '8px'
@@ -169,8 +169,8 @@
                         }),
                         h('Button', {
                             props: {
-                                icon: 'md-remove', 
-                                type: 'warning', 
+                                icon: 'md-remove',
+                                type: 'warning',
                                 size: 'small',
                                 disabled: node.children.length > 0
                             },
