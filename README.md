@@ -1,29 +1,24 @@
-# admin-web
+# 管理界面前端
 
-## Project setup
+## 项目初始化
 ```
 npm install
 ```
 
-### Compiles and hot-reloads for development
+### 本地开发
 ```
 npm run serve
 ```
 
-### Compiles and minifies for production
+### 项目编译
 ```
 npm run build
 ```
 
-### Run your tests
+### 项目配置
 ```
-npm run test
-```
-
-### Lints and fixes files
-```
-npm run lint
+./.env
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### 更多配置选项
+差坑 [https://cli.vuejs.org](https://cli.vuejs.org/config/).
