@@ -71,7 +71,6 @@
         },
         methods: {
             renderContent(h, {data, node, root}) {
-                console.log(node)
                 // 获取同级节点
                 let brother = [];
                 // 一级节点

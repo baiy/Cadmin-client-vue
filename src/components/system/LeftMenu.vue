@@ -61,7 +61,7 @@
                 });
                 return menu;
             },
-            openNames(){
+            openNames() {
                 let isCollapsed = this.isCollapsed;
                 let menu = [];
                 let path = this.$route.path;
@@ -85,6 +85,9 @@
         },
         methods: {
             goto(menuId) {
+                if (menuId === "site-name") {
+                    return this.$router.push('/');
+                }
                 let $this = this;
                 this.pageMenus.forEach(function ({url, id}) {
                     if (id === menuId) {
@@ -96,10 +99,11 @@
     }
 </script>
 <style>
-    .collapsed-menu .ivu-menu-submenu-title .ivu-menu-submenu-title-icon{
-       display: none;
+    .collapsed-menu .ivu-menu-submenu-title .ivu-menu-submenu-title-icon {
+        display: none;
         transition: display .2s ease;
     }
+
     .collapsed-menu .ivu-menu {
         display: none;
         transition: display .2s ease;
@@ -127,6 +131,7 @@
         width: 0;
         transition: width .2s ease;
     }
+
     .collapsed-menu i {
         transform: translateX(5px);
         transition: font-size .2s ease .2s, transform .2s ease .2s;

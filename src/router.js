@@ -34,6 +34,9 @@ requireAll(require.context('./views', true, /\.vue$/)).forEach(({default: item})
 // title 设置
 const setTitle = function (to) {
     let title = config('SITE_NAME');
+    if (!store.state.admin.adminMenu.length){
+        return;
+    }
     store.state.admin.adminMenu.forEach(item => {
         if (item.url === to.path) {
             title = item.name
