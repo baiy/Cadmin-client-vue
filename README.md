@@ -1,4 +1,4 @@
-## 项目初始化
+### 项目初始化
 ```
 npm install
 ```
@@ -17,6 +17,9 @@ npm run build
 ```
 ./.env
 ```
+
+### 对应服务端
+<https://github.com/baiy/admin-service>
 
 ### 更多配置选项
 查看 [https://cli.vuejs.org](https://cli.vuejs.org/config/).
