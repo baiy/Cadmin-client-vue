@@ -26,6 +26,7 @@
 </template>
 
 <script>
+    import {setTitle} from '../../router'
     export default {
         name: 'Login',
         data() {
@@ -60,6 +61,7 @@
                             $this.$api('system/User').get('load', {
                                 success(r) {
                                     $this.$store.dispatch('initialize', r.data);
+                                    setTitle($this.$route)
                                 },
                                 error(r) {
                                     $this.$Notice.error({title: '系统初始化发送异常', desc: r.info, duration: 5});

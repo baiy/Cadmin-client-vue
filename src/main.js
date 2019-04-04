@@ -1,11 +1,11 @@
 import Vue from 'vue'
-import App from './App.vue'
 import './plugins/iview.js'
 import {adminVue} from './admin.js'
-import router from './router'
 import store from './store'
+import router from './router'
 import listFilter from './components/common/listFilter.vue'
 import tableLists from './components/common/tableLists.vue'
+import App from './App.vue'
 
 Vue.config.productionTip = false;
 Vue.use(adminVue);

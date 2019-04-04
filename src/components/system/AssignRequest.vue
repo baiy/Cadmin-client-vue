@@ -86,7 +86,7 @@
                     data: {groupId: this.group.id, requestId: row.id},
                     success: () => {
                         this.assign.splice(index, 1);
-                        this.$refs.tableLists.filterLoad(true);
+                        this.$refs.tableLists.renewLoad(true);
                         this.syncAssign();
                     }
                 });
@@ -95,7 +95,7 @@
                 this.$api('system/Authorize').get('addRequest', {
                     data: {groupId: this.group.id, requestId: row.id},
                     success: () => {
-                        this.$refs.tableLists.filterLoad(true);
+                        this.$refs.tableLists.renewLoad(true);
                         this.assign = [row].concat(this.assign);
                         this.syncAssign();
                     }

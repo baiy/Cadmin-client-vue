@@ -9,8 +9,13 @@
                 </Sider>
                 <Layout>
                     <Header style="padding: 0;height:50px;line-height: 50px" class="layout-header-bar">
-                        <Icon @click.native="collapsedSider" :class="rotateIcon" :style="{margin: '0 20px'}"
+                        <Icon @click.native="collapsedSider" :class="rotateIcon" :style="{margin: '0 10px 0 20px'}"
                               type="md-menu" size="28"></Icon>
+                        <Breadcrumb class="nav">
+                            <BreadcrumbItem v-for="item in nav" :key="item.id">
+                                <Icon :type="item.icon"></Icon> {{item.name}}
+                            </BreadcrumbItem>
+                        </Breadcrumb>
                         <Dropdown @on-click="selectDropdown" style="float: right;margin-right: 20px">
                             <a href="javascript:void(0)">
                                 {{user.username}}
@@ -33,6 +38,7 @@
 <script>
     import Login from './components/system/Login.vue'
     import LeftMenu from './components/system/LeftMenu.vue'
+    import {setTitle} from './router'
     import $ from 'jquery'
 
     export default {
@@ -42,14 +48,31 @@
         },
         data() {
             return {
-                isCollapsed: false
+                isCollapsed: false,
             }
         },
         computed: {
             isLogin() {
                 return this.$store.getters.getAdminUser.hasOwnProperty('id');
             },
-            user(){
+            nav() {
+                const allMenu = this.$store.getters.getAdminMenu;
+                let menus = [this.$store.getters.getCurrentMenu];
+                let parentId = this.$store.getters.getCurrentMenu.parent_id;
+                let is = true;
+                while (parentId && is) {
+                    is = false;
+                    for (let i = 0; i < allMenu.length; i++) {
+                        if (allMenu[i].id === parentId) {
+                            menus = [allMenu[i], ...menus];
+                            parentId = allMenu[i].parent_id;
+                            is = true;
+                        }
+                    }
+                }
+                return menus
+            },
+            user() {
                 return this.$store.getters.getAdminUser;
             },
             rotateIcon() {
@@ -77,6 +100,7 @@
                 this.$api('system/User').get('load', {
                     success(r) {
                         $this.$store.dispatch('initialize', r.data)
+                        setTitle($this.$route)
                     },
                     error() {
                         $this.$store.dispatch('logout');
@@ -86,7 +110,7 @@
                     }
                 });
             },
-            selectDropdown(name){
+            selectDropdown(name) {
                 this[name]();
             },
             logout() {
@@ -94,6 +118,7 @@
                 this.$api('system/User').get('logout', {
                     success() {
                         $this.$store.dispatch('logout');
+                        setTitle($this.$route)
                     }
                 });
             },
@@ -121,5 +146,11 @@
 
     .rotate-icon {
         transform: rotate(-90deg);
+    }
+
+    .nav {
+        display: inline-block;
+        width: 500px;
+        vertical-align: middle;
     }
 </style>

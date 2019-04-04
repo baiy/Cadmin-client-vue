@@ -3,7 +3,7 @@
         <list-filter v-if="!hiddenFilter">
             <slot name="filterContent"></slot>
             <slot name="filterButton" v-if="filterType === 1">
-                <Button type="primary" class="filter-item" @click="filterLoad()">查 询</Button>
+                <Button type="primary" class="filter-item" @click="renewLoad()">查 询</Button>
             </slot>
             <div slot="right">
                 <slot name="filterRight"></slot>
@@ -84,7 +84,7 @@
             filter: {
                 handler: function () {
                     if (this.filterType === 2) {
-                        this.filterLoad()
+                        this.renewLoad()
                     }
                 },
                 deep: true
@@ -104,7 +104,7 @@
             },
             pageSizeChange: function (size) {
                 this.pageSizeData  = size;
-                this.filterLoad();
+                this.renewLoad();
             },
             load() {
                 let $this = this;
@@ -125,7 +125,7 @@
                 ajaxOption.type = this.requestMethod;
                 this.$api(this.requestApi).ajax(ajaxOption);
             },
-            filterLoad(isPage) {
+            renewLoad(isPage) {
                 if (!isPage) {
                     this.page = 1;
                 }

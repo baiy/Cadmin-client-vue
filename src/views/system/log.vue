@@ -1,12 +1,12 @@
 <template>
     <div>
-        <table-lists v-model="lists" :filter="filter" :filterType="2" requestApi="system/Log/lists">
+        <table-lists ref="tableLists" v-model="lists" :filter="filter" :filterType="2" requestApi="system/Log/lists">
             <template slot="filterContent">
                 <Input type="text" v-model="filter.keyword" class="filter-item" placeholder="搜索url关键词" clearable/>
                 <Input type="text" v-model="filter.userid" class="filter-item" placeholder="后台用户ID" clearable/>
             </template>
             <template slot="filterRight">
-                <Button size="small" type="error" icon="md-remove-circle" class="filter-item" @click="clear()">清空日志
+                <Button type="error" icon="md-remove-circle" class="filter-item" @click="clear()">清空日志
                 </Button>
             </template>
             <Table :columns="columns" :data="lists" stripe>
@@ -87,10 +87,9 @@
                     onOk: () => {
                         this.$api('system/Log').get('clear', {
                             success: () => {
-
+                                this.$refs.tableLists.renewLoad(true);
                             }
                         });
-
                     }
                 });
             },

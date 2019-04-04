@@ -5,6 +5,7 @@ export default {
     state: {
         adminUser: {},
         adminMenu: [],
+        currentMenu: "",
     },
     getters: {
         getAdminUser(state) {
@@ -12,7 +13,10 @@ export default {
         },
         getAdminMenu(state) {
             return state.adminMenu;
-        }
+        },
+        getCurrentMenu(state) {
+            return state.currentMenu;
+        },
     },
     mutations: {
         setAdminUser(state, user) {
@@ -20,7 +24,10 @@ export default {
 
         },
         setAdminMenu(state, menu) {
-            state.adminMenu = menu ? menu : {};
+            state.adminMenu = menu ? menu : [];
+        },
+        setCurrentMenu(state, menu) {
+            state.currentMenu = menu ? menu : {};
         }
     },
     actions: {
@@ -31,10 +38,13 @@ export default {
         logout({commit}) {
             localStorage.removeItem(config('ADMIN_TOKEN_NAME'));
             commit('setAdminUser', {});
-            commit('setAdminMenu', {});
+            commit('setAdminMenu', []);
         },
         login(context, {token}) {
             localStorage.setItem(config('ADMIN_TOKEN_NAME'), token);
-        }
+        },
+        updateCurrentMenu({commit}, menu) {
+            commit('setCurrentMenu', menu);
+        },
     }
 }

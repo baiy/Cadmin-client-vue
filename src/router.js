@@ -1,6 +1,5 @@
 import $ from 'jquery';
 import Vue from 'vue'
-import store from './store'
 import Router from 'vue-router'
 import {config} from './admin.js'
 
@@ -31,31 +30,27 @@ requireAll(require.context('./views', true, /\.vue$/)).forEach(({default: item})
     }
 });
 
-// title 设置
-const setTitle = function (to) {
-    let title = config('SITE_NAME');
-    if (!store.state.admin.adminMenu.length){
-        return;
-    }
-    store.state.admin.adminMenu.forEach(item => {
-        if (item.url === to.path) {
-            title = item.name
-        }
-    });
-    document.title = siteTitleTpl.replace(/{title}/g, title);
-};
-
 Vue.use(Router);
 
 const router = new Router({routes});
 
+// title 设置
+export const setTitle = function (to) {
+    let title = config('SITE_NAME');
+    if (router.app.$store.getters.getAdminMenu.length){
+        router.app.$store.getters.getAdminMenu.forEach(item => {
+            if (item.url === to.path) {
+                title = siteTitleTpl.replace(/{title}/g, item.name);
+                router.app.$store.dispatch('updateCurrentMenu',item);
+            }
+        });
+    }
+    document.title = title;
+};
+
 router.afterEach(to => {
-    if (store.state.admin.adminMenu.length !== 0) {
+    if (router.app.$store.getters.getAdminMenu.length !== 0) {
         setTitle(to)
-    } else {
-        setTimeout(function () {
-            setTitle(to);
-        }, 3000)
     }
     window.scrollTo(0, 0);
 });

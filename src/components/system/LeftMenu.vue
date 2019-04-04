@@ -25,6 +25,8 @@
 </template>
 
 <script>
+    import $ from 'jquery'
+
     let tree = function (menus, pid) {
         let menu = [];
         menus.forEach(function (item) {
@@ -50,7 +52,8 @@
                 return this.$config('SITE_NAME');
             },
             menus() {
-                return tree(this.$store.getters.getAdminMenu, 0);
+                let allMenu = $.extend(true,[],this.$store.getters.getAdminMenu);
+                return tree(allMenu, 0);
             },
             pageMenus() {
                 let menu = [];
