@@ -15,7 +15,7 @@
                                 <Icon type="ios-lock-outline" slot="prepend"></Icon>
                             </Input>
                         </FormItem>
-                        <FormItem>
+                        <FormItem style="margin-bottom: 5px">
                             <Button size="large" type="primary" long @click="handleSubmit('form')">登 录</Button>
                         </FormItem>
                     </Form>

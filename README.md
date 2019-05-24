@@ -21,5 +21,7 @@ npm run build
 ### 对应服务端
 <https://github.com/baiy/admin-service>
 
+<https://github.com/baiy/admin-service-laravel>
+
 ### 更多配置选项
 查看 [https://cli.vuejs.org](https://cli.vuejs.org/config/).
