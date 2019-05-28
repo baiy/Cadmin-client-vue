@@ -1,6 +1,6 @@
 <template>
     <Menu :active-name="active" :open-names="openNames" theme="dark" width="auto" :class="menuClass"
-          @on-select="goto">
+          @on-select="goto" :accordion="true">
         <MenuItem name="site-name">
             <Icon type="ios-home"/>
             <span>{{siteName}}</span>
@@ -52,7 +52,7 @@
                 return this.$config('SITE_NAME');
             },
             menus() {
-                let allMenu = $.extend(true,[],this.$store.getters.getAdminMenu);
+                let allMenu = $.extend(true, [], this.$store.getters.getAdminMenu);
                 return tree(allMenu, 0);
             },
             pageMenus() {
@@ -67,13 +67,20 @@
             openNames() {
                 let isCollapsed = this.isCollapsed;
                 let menu = [];
+                let oneMenuId = 0;
                 let path = this.$route.path;
                 this.pageMenus.forEach(function ({url, parent_id}) {
-                    if (url === path && !isCollapsed) {
+                    if (url){
+                        oneMenuId = oneMenuId ? oneMenuId : parent_id;
+                    }
+                    if (url === path) {
                         menu.push(parent_id);
                     }
                 });
-                return menu;
+                if (menu.length === 0 &&  oneMenuId){
+                    menu.push(oneMenuId);
+                }
+                return !isCollapsed ? menu : [];
             },
             active() {
                 let menu = "";
@@ -91,10 +98,14 @@
                 if (menuId === "site-name") {
                     return this.$router.push('/');
                 }
-                let $this = this;
-                this.pageMenus.forEach(function ({url, id}) {
+                this.pageMenus.forEach(({url, id}) => {
                     if (id === menuId) {
-                        $this.$router.push(url)
+                        if (url.indexOf('://') !== -1) {
+                            // 外部链接
+                            return window.open(url);
+                        } else {
+                            return this.$router.push(url);
+                        }
                     }
                 });
             },

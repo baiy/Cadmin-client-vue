@@ -1,62 +1,111 @@
 <template>
     <div>
-        <table-lists v-model="lists" :filter="filter" :filterType="2" requestApi="system/Request/lists">
+        <table-lists ref="tableLists" v-model="lists" :filter="filter" :filterType="2" requestApi="/system/request/lists">
             <template slot="filterContent">
-                <Input type="text" v-model="filter.keyword" class="filter-item" placeholder="搜索关键词" clearable/>
-                <Select class="filter-item" v-model="filter.type" placeholder="请选择类型" clearable>
-                    <Option v-for="item in map.type" :value="item.v" :key="item.v">{{ item.n }}</Option>
-                </Select>
+                <FormItem>
+                    <Input type="text" v-model="filter.keyword" placeholder="搜索关键词" clearable/>
+                </FormItem>
             </template>
             <template slot="filterRight">
-                <Button type="success" icon="md-add" class="filter-item" @click="add()">添加</Button>
+                <Button type="success" icon="md-add" @click="add()">添加</Button>
             </template>
-            <Table ref="selection" :columns="columns" :data="tableLists" stripe>
-                <template slot-scope="{ row }" slot="name">
-                    <Input v-if="row._edit" type="text" v-model="row.name"/>
-                    <span v-else>{{ row.name }}</span>
-                </template>
+            <Table ref="selection" :columns="columns" :data="lists" stripe>
                 <template slot-scope="{ row }" slot="type">
-                    <Select v-if="row._edit" v-model="row.type">
-                        <Option v-for="item in map.type" :value="item.v" :key="item.v">{{ item.n }}</Option>
-                    </Select>
-                    <span v-else>{{ $fieldMapNameByValue(map.type,row.type) }}</span>
+                    {{ $fieldMapNameByValue(map.type,row.type) }}
                 </template>
-                <template slot-scope="{ row }" slot="value">
-                    <Input v-if="row._edit" type="text" v-model="row.value"/>
-                    <span v-else>{{ row.value }}</span>
+                <template slot-scope="{ row }" slot="_action">
+                    <Tooltip :content="row.call" :max-width="500">
+                        {{row.action}}
+                    </Tooltip>
                 </template>
                 <template slot-scope="{ row }" slot="_Authorize">
                     <Button v-if="row.groups" size="small" @click="viewGroup(row)">{{row.groups.length}}个权限</Button>
                 </template>
-                <template slot-scope="{ row ,index}" slot="op">
-                    <template v-if="row._edit">
-                        <Button size="small" type="error" @click="waive(row,index)" style="margin-right: 5px">放弃
-                        </Button>
-                        <Button size="small" type="success" @click="save(row,index)">保存</Button>
-                    </template>
-                    <template v-else>
-                        <Button size="small" type="primary" @click="row._edit=true" style="margin-right: 5px">编辑
-                        </Button>
-                        <Button v-if="row.id" size="small" type="error" @click="remove(row,index)">删除</Button>
-                    </template>
+                <template slot-scope="{ row}" slot="op">
+                    <Button size="small" type="primary" @click="edit(row)" style="margin-right: 5px">编辑</Button>
+                    <Button size="small" type="error" @click="remove(row)" style="margin-right: 5px">删除</Button>
+                    <Button size="small" @click="copy(row)">复制</Button>
                 </template>
             </Table>
         </table-lists>
-        <Modal v-model="groupView.isShow" title="关联权限查看" footer-hide :width="800">
+        <Modal v-model="groupView.show" title="关联权限查看" footer-hide :width="800">
             <Table :columns="groupView.columns" :data="groupView.data" stripe>
             </Table>
+        </Modal>
+        <Modal v-model="current.show" :title="current.data['id'] ? '编辑请求' : '添加请求'" :width="800">
+            <Form :label-width="80">
+                <FormItem label="名称">
+                    <Input v-model="current.data.name" placeholder="请求名称"></Input>
+                </FormItem>
+                <FormItem label="ACTION">
+                    <Input v-model="current.data.action"></Input>
+                </FormItem>
+                <FormItem label="类型">
+                    <Select v-model="current.data.type">
+                        <Option v-for="item in map.type" :value="item.v" :key="item.v">{{ item.n }}</Option>
+                    </Select>
+                </FormItem>
+                <FormItem label="类型配置">
+                    <Input v-model="current.data['call']"></Input>
+                </FormItem>
+            </Form>
+            <div slot="footer">
+                <Button type="primary" size="large" @click="save">提交</Button>
+            </div>
         </Modal>
     </div>
 </template>
 <script>
     import $ from 'jquery'
-    import {requestType} from './listsConst.js'
+    import {requestType} from './listsConst'
 
     export default {
+        methods: {
+            add() {
+                this.current.data = {type:1};
+                this.current.show = true;
+            },
+            copy({type,name,action,call}) {
+                this.current.data = {type,name,action,call};
+                this.current.show = true;
+            },
+            edit(row) {
+                this.current.data = $.extend(true, {}, row);
+                this.current.show = true;
+            },
+            remove(row) {
+                this.$Modal.confirm({
+                    title: "确认要删除[" + row.name + "]?",
+                    onOk: () => {
+                        this.$request('/system/request/remove').data({id:row.id}).showSuccessTip().success(()=>{
+                            this.$refs.tableLists.reload(false);
+                        }).get();
+                    }
+                });
+            },
+            save() {
+                this.$request('/system/request/save').data(this.current.data).showSuccessTip().success(()=>{
+                    this.$refs.tableLists.reload(true);
+                    this.current.show = false;
+                }).post();
+            },
+            viewGroup(row) {
+                this.groupView.data = row.groups.map(({id, name, uids}) => {
+                    return {
+                        id,
+                        name,
+                        users: uids.map((id) => {
+                            return this.$getAdminUserById(id)['username'];
+                        }).join(',')
+                    }
+                });
+                this.groupView.show = true
+            }
+        },
         data() {
             return {
                 groupView: {
-                    isShow: false,
+                    show: false,
                     data: [],
                     columns: [
                         {
@@ -81,7 +130,6 @@
                 },
                 filter: {
                     keyword: "",
-                    type: ""
                 },
                 columns: [
                     {
@@ -92,8 +140,8 @@
                     },
                     {
                         title: '名称',
-                        slot: 'name',
-                        width: 200
+                        key: 'name',
+                        width: 260
                     },
                     {
                         title: '类型',
@@ -101,8 +149,8 @@
                         width: 150
                     },
                     {
-                        title: '值',
-                        slot: 'value',
+                        title: 'ACTION',
+                        slot: '_action',
                     },
                     {
                         title: '创建时间',
@@ -118,79 +166,15 @@
                     {
                         title: '操作',
                         slot: 'op',
-                        width: 150
+                        width: 200
                     },
                 ],
                 lists: [],
-                tableLists: []
-            }
-        },
-        watch: {
-            lists: {
-                handler() {
-                    this.tableLists = $.extend([], true, this.lists).map((item) => {
-                        item._edit = false;
-                        return item;
-                    });
+                current:{
+                    show:false,
+                    data:{},
                 },
-                deep: true
             }
-        },
-        methods: {
-            add() {
-                this.tableLists = [{id: 0, _edit: true, type: 2}].concat(this.tableLists)
-            },
-            remove(row, index) {
-                this.$Modal.confirm({
-                    title: "确认要删除当前[" + row.name + "]请求?",
-                    onOk: () => {
-                        this.$api('system/Request').get('remove', {
-                            data: {id: row.id},
-                            success: () => {
-                                this.tableLists.splice(index, 1);
-                            }
-                        });
-
-                    }
-                });
-            },
-            waive(row, index) {
-                if (row.id) {
-                    row._edit = false;
-                } else {
-                    this.tableLists.splice(index, 1);
-                }
-            },
-            save(row, index) {
-                this.$api('system/Request').post('save', {
-                    data: {
-                        id: row.id || 0,
-                        type: row.type,
-                        name: row.name,
-                        value: row.value
-                    },
-                    success: (r) => {
-                        row.id = r.data.id;
-                        row._edit = false;
-                        this.tableLists.splice(index, 1, row);
-                    }
-                });
-            },
-            viewGroup(row) {
-                this.groupView.data = row.groups.map(({id, name, users}) => {
-                    return {
-                        id,
-                        name,
-                        users: users.map(({username}) => {
-                            return username
-                        }).join(',')
-                    }
-                });
-                this.groupView.isShow = true
-            },
         },
     }
 </script>
-<style scoped>
-
-</style>

@@ -4,6 +4,5 @@ export const userStatus = [
 ];
 
 export const requestType = [
-    {v: 1, n: '前端页面'},
-    {v: 2, n: '后端API'}
+    {v: 1, n: '本地调用'},
 ]

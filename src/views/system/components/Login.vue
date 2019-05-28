@@ -26,7 +26,8 @@
 </template>
 
 <script>
-    import {setTitle} from '../../router'
+    import {setTitle} from '../../../router'
+
     export default {
         name: 'Login',
         data() {
@@ -52,24 +53,19 @@
                     if (!valid) {
                         return;
                     }
-                    $this.$api('system/User').post('login', {
-                        data: $this.form,
-                        success(r) {
-                            // 设置登录
-                            $this.$store.dispatch('login', r.data);
-                            // 重新初始化系统
-                            $this.$api('system/User').get('load', {
-                                success(r) {
-                                    $this.$store.dispatch('initialize', r.data);
-                                    setTitle($this.$route)
-                                },
-                                error(r) {
-                                    $this.$Notice.error({title: '系统初始化发送异常', desc: r.info, duration: 5});
-                                    $this.$store.dispatch('logout');
-                                }
-                            });
-                        }
-                    });
+                    this.$request("/login").data($this.form).success((r) => {
+                        // 设置登录
+                        this.$store.dispatch('login', r.data);
+                        // 重新初始化系统
+                        this.$request("/load").success((r) => {
+                            this.$store.dispatch('initialize', r.data);
+                            setTitle(this.$route)
+                        }).error(() => {
+                            this.$Notice.error({title: '系统初始化发送异常', desc: r.info, duration: 5});
+                            this.$store.dispatch('logout');
+                        }).get();
+                    }).post()
+
                 })
             }
         }

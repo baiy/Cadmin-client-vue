@@ -13,7 +13,8 @@
                               type="md-menu" size="28"></Icon>
                         <Breadcrumb class="nav">
                             <BreadcrumbItem v-for="item in nav" :key="item.id">
-                                <Icon :type="item.icon"></Icon> {{item.name}}
+                                <Icon :type="item.icon"></Icon>
+                                {{item.name}}
                             </BreadcrumbItem>
                         </Breadcrumb>
                         <Dropdown @on-click="selectDropdown" style="float: right;margin-right: 20px">
@@ -36,8 +37,8 @@
 </template>
 
 <script>
-    import Login from './components/system/Login.vue'
-    import LeftMenu from './components/system/LeftMenu.vue'
+    import Login from './views/system/components/Login.vue'
+    import LeftMenu from './views/system/components/LeftMenu.vue'
     import {setTitle} from './router'
     import $ from 'jquery'
 
@@ -89,38 +90,31 @@
             }
         },
         created() {
-            this.initialize();
         },
         mounted() {
+            this.$router.onReady(() => {
+                this.initialize();
+            });
         },
         methods: {
             // 初始化系统
             initialize() {
-                let $this = this;
-                this.$api('system/User').get('load', {
-                    success(r) {
-                        $this.$store.dispatch('initialize', r.data)
-                        setTitle($this.$route)
-                    },
-                    error() {
-                        $this.$store.dispatch('logout');
-                    },
-                    complete() {
-                        $("#loading").remove();
-                    }
-                });
+                this.$request("/load").success((r) => {
+                    this.$store.dispatch('initialize', r.data)
+                }).error(() => {
+                    this.$store.dispatch('logout');
+                }).complete(() => {
+                    $("#loading").remove()
+                }).get();
             },
             selectDropdown(name) {
                 this[name]();
             },
             logout() {
-                let $this = this;
-                this.$api('system/User').get('logout', {
-                    success() {
-                        $this.$store.dispatch('logout');
-                        setTitle($this.$route)
-                    }
-                });
+                this.$request("/logout").success(() => {
+                    this.$store.dispatch('logout');
+                    setTitle(this.$route)
+                }).get();
             },
             collapsedSider() {
                 this.$refs.side1.toggleCollapse();

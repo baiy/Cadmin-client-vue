@@ -48,7 +48,7 @@
 </template>
 <script>
     import $ from "jquery"
-    import iconSelect from '../../components/system/iconSelect.vue'
+    import iconSelect from './components/iconSelect'
 
     export default {
         data() {
@@ -184,24 +184,20 @@
                 ]);
             },
             load() {
-                let $this = this;
-                this.$api('system/Menu').get('lists', {
-                    success(r) {
-                        $this.lists = r.data
-                    },
-                })
+                this.$request('/system/menu/lists').success((r)=>{
+                    this.lists = r.data
+                }).get()
             },
             tree(menus, pid, level) {
-                let $this = this;
                 let menu = [];
-                menus.forEach(function (item) {
+                menus.forEach(item => {
                     if (item['parent_id'] === pid) {
                         menu.push({
                             menu: item,
                             title: item.name,
                             level: level,
                             expand: true,
-                            children: item['url'] ? [] : $this.tree(menus, item['id'], level + 1),
+                            children: item['url'] ? [] : this.tree(menus, item['id'], level + 1),
                         });
                     }
                 });
@@ -219,12 +215,9 @@
                 this.$Modal.confirm({
                     title: "确认要移除当前菜单[" + data.title + "]?",
                     onOk: () => {
-                        this.$api('system/Menu').post('remove', {
-                            data: {id: data.menu.id},
-                            success: () => {
-                                this.load();
-                            },
-                        })
+                        this.$request('/system/menu/remove').data({id: data.menu.id}).showSuccessTip().success(() => {
+                            this.load();
+                        }).post();
                     }
                 });
             },
@@ -245,14 +238,11 @@
                 });
             },
             saveSetCurrent() {
-                this.$api('system/Menu').post('save', {
-                    data: this.current,
-                    success: () => {
-                        this.current = {};
-                        this.load();
-                        this.ieEditIng = false;
-                    },
-                })
+                this.$request('/system/menu/save').data(this.current).showSuccessTip().success(() => {
+                    this.current = {};
+                    this.load();
+                    this.ieEditIng = false;
+                }).post()
             },
             down(brother, currentIndex) {
                 let current = brother[currentIndex];
@@ -262,10 +252,7 @@
                 let menus = brother.map(function ({id, name}, sort) {
                     return {id, sort, name}
                 });
-                this.$api('system/Menu').post('sort', {
-                    data: {menus},
-                    success: () => this.load(),
-                })
+                this.$request('/system/menu/sort').data({menus}).showSuccessTip().success(() => this.load()).post()
             },
             up(brother, currentIndex) {
                 let current = brother[currentIndex];
@@ -275,10 +262,7 @@
                 let menus = brother.map(function ({id, name}, sort) {
                     return {id, sort, name}
                 });
-                this.$api('system/Menu').post('sort', {
-                    data: {menus},
-                    success: () => this.load(),
-                })
+                this.$request('/system/menu/sort').data({menus}).showSuccessTip().success(() => this.load()).post()
             },
             iconSelect() {
                 this.$refs.iconSelect.open();
@@ -286,6 +270,3 @@
         },
     }
 </script>
-<style scoped>
-</style>
-

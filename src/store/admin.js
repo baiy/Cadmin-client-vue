@@ -1,10 +1,11 @@
-import {config} from '../admin'
+import {config} from '../helper'
 import localStorage from "localStorage";
 
 export default {
     state: {
         adminUser: {},
         adminMenu: [],
+        adminAllUser: [],
         currentMenu: "",
     },
     getters: {
@@ -14,6 +15,9 @@ export default {
         getAdminMenu(state) {
             return state.adminMenu;
         },
+        getAdminAllUser(state) {
+            return state.adminAllUser;
+        },
         getCurrentMenu(state) {
             return state.currentMenu;
         },
@@ -21,7 +25,9 @@ export default {
     mutations: {
         setAdminUser(state, user) {
             state.adminUser = user ? user : {};
-
+        },
+        setAdminAllUser(state, user) {
+            state.adminAllUser = user ? user : [];
         },
         setAdminMenu(state, menu) {
             state.adminMenu = menu ? menu : [];
@@ -31,9 +37,10 @@ export default {
         }
     },
     actions: {
-        initialize({commit}, {user, menu}) {
+        initialize({commit}, {user, menu, allUser}) {
             commit('setAdminUser', user);
             commit('setAdminMenu', menu);
+            commit('setAdminAllUser', allUser);
         },
         logout({commit}) {
             localStorage.removeItem(config('ADMIN_TOKEN_NAME'));

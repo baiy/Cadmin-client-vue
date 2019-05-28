@@ -1,24 +1,22 @@
 <template>
     <div class="table-lists">
-        <list-filter v-if="!hiddenFilter">
+        <page-bar v-if="!hiddenFilter">
             <slot name="filterContent"></slot>
             <slot name="filterButton" v-if="filterType === 1">
-                <Button type="primary" class="filter-item" @click="renewLoad()">查 询</Button>
+                <Button type="primary" @click="reload()">查 询</Button>
             </slot>
             <div slot="right">
                 <slot name="filterRight"></slot>
             </div>
-        </list-filter>
+        </page-bar>
         <slot></slot>
-        <Row :gutter="16" style="margin-top: 10px">
-            <Col span="8" style="min-height: 1px">
-                <slot name="options"></slot>
-            </Col>
-            <Col span="16" style="text-align: right">
+        <page-bar style="margin-top: 10px" :rightWidth="750">
+            <slot name="options"></slot>
+            <div slot="right">
                 <page @on-change="changePage" :current="page" :page-size="pageSizeData" :total="total" show-total
                       show-elevator show-sizer @on-page-size-change="pageSizeChange" :page-size-opts="[10,20,50,100,200]"></page>
-            </Col>
-        </Row>
+            </div>
+        </page-bar>
     </div>
 </template>
 
@@ -31,7 +29,6 @@
             return {
                 page: 1,
                 total: 0,
-                result: [],
                 pageSizeData:this.pageSize,
             };
         },
@@ -52,19 +49,9 @@
                 type: Number,
                 default: 20
             },
-            requestMethod: {
-                type: String,
-                default: "get",
-            },
             requestApi: {
                 type: String,
                 required: true
-            },
-            requestOption: {
-                type: Object,
-                default: function () {
-                    return {}
-                }
             },
             autoLoad: {
                 type: Boolean,
@@ -84,7 +71,7 @@
             filter: {
                 handler: function () {
                     if (this.filterType === 2) {
-                        this.renewLoad()
+                        this.reload()
                     }
                 },
                 deep: true
@@ -95,8 +82,6 @@
                 this.load();
             }
         },
-        mounted() {
-        },
         methods: {
             changePage: function (page) {
                 this.page = page;
@@ -104,37 +89,24 @@
             },
             pageSizeChange: function (size) {
                 this.pageSizeData  = size;
-                this.renewLoad();
+                this.reload();
             },
             load() {
-                let $this = this;
-                let ajaxOption = $.extend(true, {}, this.requestOption);
-                ajaxOption.data = $.extend(true, {}, this.filter);
-                ajaxOption.data.page = this.page;
-                ajaxOption.data.pageSize = this.pageSizeData;
-
-                ajaxOption.success = function (r) {
-                    $this.total = r.data['total'];
-                    $this.result = r.data;
-                    $this.$emit('input', r.data['lists']);
-                    $this.requestOption.success && $this.requestOption.success(r)
-                };
-                ajaxOption.error = function (r) {
-                    $this.requestOption.error && $this.requestOption.error(r)
-                };
-                ajaxOption.type = this.requestMethod;
-                this.$api(this.requestApi).ajax(ajaxOption);
+                this.$request(this.requestApi).data({
+                    offset:(this.page -1) * this.pageSizeData,
+                    pageSize:this.pageSizeData,
+                    ...$.extend(true, {}, this.filter)
+                }).success((r)=>{
+                    this.total = r.data['total'];
+                    this.$emit('input', r.data['lists']);
+                }).get()
             },
-            renewLoad(isPage) {
+            reload(isPage) {
                 if (!isPage) {
                     this.page = 1;
                 }
                 this.load();
             },
-            filterResult() {
-                return this.result;
-            },
-
         },
     }
 </script>
