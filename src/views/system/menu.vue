@@ -47,8 +47,8 @@
     </div>
 </template>
 <script>
-    import $ from "jquery"
     import iconSelect from './components/iconSelect'
+    import _ from "lodash";
 
     export default {
         data() {
@@ -157,7 +157,7 @@
                             }
                         }),
                         h('Button', {
-                            props: {icon: 'md-add', type: 'primary', size: 'small', disabled: data.level > 1},
+                            props: {icon: 'md-add', type: 'primary', size: 'small', disabled: data.level > 2},
                             style: {
                                 marginRight: '8px'
                             },
@@ -225,7 +225,7 @@
                 if (this.ieEditIng) {
                     return this.$Notice.error({title: "请先保存或放弃当前编辑/添加的菜单"});
                 }
-                this.current = $.extend(true, {}, data);
+                this.current = _.cloneDeep(data);
                 this.ieEditIng = true;
             },
             cancelSetCurrent() {

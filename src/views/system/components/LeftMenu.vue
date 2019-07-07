@@ -6,26 +6,40 @@
             <span>{{siteName}}</span>
         </MenuItem>
         <div v-for="menu in menus" :key="menu.id">
-            <Submenu :name="menu.id" v-if="!menu.url">
-                <template slot="title">
-                    <Icon :type="menu.icon" v-if="menu.icon"/>
-                    <span>{{menu.name}}</span>
-                </template>
-                <MenuItem v-for="sub in menu['sub_menu']" :key="sub.id" :name="sub.id" :class="['test']">
-                    <Icon :type="sub.icon" v-if="sub.icon"></Icon>
-                    <span>{{sub.name}}</span>
-                </MenuItem>
-            </Submenu>
             <MenuItem :name="menu.id" v-if="menu.url">
                 <Icon type="menu.icon"></Icon>
                 <span>{{menu.name}}</span>
             </MenuItem>
+            <Submenu :name="menu.id" v-else>
+                <template slot="title">
+                    <Icon :type="menu.icon" v-if="menu.icon"/>
+                    <span>{{menu.name}}</span>
+                </template>
+                <div v-for="second in menu['sub_menu']" :key="second.id">
+                    <MenuItem :name="second.id" v-if="second.url">
+                        <Icon :type="second.icon" v-if="second.icon"></Icon>
+                        <span>{{second.name}}</span>
+                    </MenuItem>
+                    <Submenu :name="second.id" v-else>
+                        <template slot="title">
+                            <Icon :type="second.icon" v-if="second.icon"/>
+                            <span>{{second.name}}</span>
+                        </template>
+                        <div v-for="third in second['sub_menu']" :key="third.id">
+                            <MenuItem :name="third.id">
+                                <Icon :type="third.icon" v-if="third.icon"></Icon>
+                                <span>{{third.name}}</span>
+                            </MenuItem>
+                        </div>
+                    </Submenu>
+                </div>
+            </Submenu>
         </div>
     </Menu>
 </template>
 
 <script>
-    import $ from 'jquery'
+    import _ from "lodash";
 
     let tree = function (menus, pid) {
         let menu = [];
@@ -52,8 +66,7 @@
                 return this.$config('SITE_NAME');
             },
             menus() {
-                let allMenu = $.extend(true, [], this.$store.getters.getAdminMenu);
-                return tree(allMenu, 0);
+                return tree(_.cloneDeep(this.$store.getters.getAdminMenu), 0);
             },
             pageMenus() {
                 let menu = [];
@@ -65,22 +78,7 @@
                 return menu;
             },
             openNames() {
-                let isCollapsed = this.isCollapsed;
-                let menu = [];
-                let oneMenuId = 0;
-                let path = this.$route.path;
-                this.pageMenus.forEach(function ({url, parent_id}) {
-                    if (url){
-                        oneMenuId = oneMenuId ? oneMenuId : parent_id;
-                    }
-                    if (url === path) {
-                        menu.push(parent_id);
-                    }
-                });
-                if (menu.length === 0 &&  oneMenuId){
-                    menu.push(oneMenuId);
-                }
-                return !isCollapsed ? menu : [];
+                return !this.isCollapsed ? this.$store.getters.getCurrentMenuIds : [];
             },
             active() {
                 let menu = "";

@@ -1,7 +1,7 @@
-import $ from 'jquery';
 import Vue from 'vue'
 import Router from 'vue-router'
 import {config, trim} from './helper'
+import _ from "lodash";
 
 // 默认title
 document.title = config('SITE_NAME');
@@ -45,7 +45,7 @@ export const setTitle = function (to) {
         router.app.$store.getters.getAdminMenu.forEach(item => {
             if (item.url === to.path) {
                 title = siteTitleTpl.replace(/{title}/g, item.name);
-                currentMenu = $.extend(true, {}, item);
+                currentMenu = _.cloneDeep(item);
             }
         });
     }

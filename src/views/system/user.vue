@@ -46,8 +46,8 @@
     </div>
 </template>
 <script>
-    import $ from 'jquery'
     import {userStatus} from './listsConst.js'
+    import _ from "lodash";
 
     export default {
         methods: {
@@ -56,7 +56,7 @@
                 this.current.show = true;
             },
             edit(row) {
-                this.current.data = $.extend(true, {}, row);
+                this.current.data = _.cloneDeep(row);
                 this.current.show = true;
             },
             remove(row) {

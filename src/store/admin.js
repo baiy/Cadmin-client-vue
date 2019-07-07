@@ -21,6 +21,24 @@ export default {
         getCurrentMenu(state) {
             return state.currentMenu;
         },
+        getCurrentMenuIds(state) {
+            if (state.currentMenu){
+                let ids = [state.currentMenu.id];
+                let current = state.currentMenu;
+                const allMenu = state.adminMenu;
+                while (current.parent_id) {
+                    for (let i = 0; i < allMenu.length; i++) {
+                        if (current.parent_id === allMenu[i].id) {
+                            ids.push(allMenu[i].id);
+                            current = allMenu[i];
+                            break;
+                        }
+                    }
+                }
+                return ids.reverse();
+            }
+            return [];
+        },
     },
     mutations: {
         setAdminUser(state, user) {

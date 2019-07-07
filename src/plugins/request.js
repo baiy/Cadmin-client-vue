@@ -1,22 +1,26 @@
-import $ from "jquery";
 import localStorage from "localStorage";
+import axios from "axios"
 import {config, serverUrl} from "../helper"
+import _ from "lodash";
 
 export const request = function ({type, data, dataType, url, success, error, complete}) {
-    $.ajax({
-        type: type || "get",
-        dataType: dataType || "json",
-        data: data || {},
+    type = (type || 'get').toUpperCase();
+    let config = {
+        method: type || "get",
         url: url,
-        success: function (response) {
-            success && success(response)
-        },
-        error: function () {
-            error && error();
-        },
-        complete: function () {
-            complete && complete();
-        }
+        responseType: dataType || 'json'
+    };
+    if (_.indexOf(["POST", "PUT", "PATCH"], type) === -1) {
+        config.params = data;
+    } else {
+        config.data = data;
+    }
+    axios(config).then((response) => {
+        complete && complete();
+        success && success(response.data)
+    }).catch((e) => {
+        complete && complete();
+        error && error(e);
     });
 };
 

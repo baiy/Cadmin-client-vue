@@ -40,7 +40,7 @@
     import Login from './views/system/components/Login.vue'
     import LeftMenu from './views/system/components/LeftMenu.vue'
     import {setTitle} from './router'
-    import $ from 'jquery'
+    import _ from 'lodash'
 
     export default {
         components: {
@@ -57,20 +57,14 @@
                 return this.$store.getters.getAdminUser.hasOwnProperty('id');
             },
             nav() {
-                const allMenu = this.$store.getters.getAdminMenu;
-                let menus = [this.$store.getters.getCurrentMenu];
-                let parentId = this.$store.getters.getCurrentMenu.parent_id;
-                let is = true;
-                while (parentId && is) {
-                    is = false;
-                    for (let i = 0; i < allMenu.length; i++) {
-                        if (allMenu[i].id === parentId) {
-                            menus = [allMenu[i], ...menus];
-                            parentId = allMenu[i].parent_id;
-                            is = true;
-                        }
+                let menus = [];
+                let ids = this.$store.getters.getCurrentMenuIds;
+                this.$store.getters.getAdminMenu.forEach((item) => {
+                    if (_.indexOf(ids, item.id) !== -1) {
+                        menus.push(item)
                     }
-                }
+                });
+
                 return menus
             },
             user() {
@@ -101,10 +95,11 @@
             initialize() {
                 this.$request("/load").success((r) => {
                     this.$store.dispatch('initialize', r.data)
+                    setTitle(this.$route)
                 }).error(() => {
                     this.$store.dispatch('logout');
                 }).complete(() => {
-                    $("#loading").remove()
+                    document.querySelector("#loading").remove();
                 }).get();
             },
             selectDropdown(name) {

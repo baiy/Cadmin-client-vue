@@ -29,7 +29,7 @@ VUE_APP_SITE_TITLE_TPL = '{title} - 后台管理'
 ```
 
 ### 对应服务端项目
-<https://github.com/baiy/admin-service>
+<https://github.com/baiy/Cadmin-service-php>
 
 > 服务端内置`Thinkphp`/`Laravel`框架支持
 

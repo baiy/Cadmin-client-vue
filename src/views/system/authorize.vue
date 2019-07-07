@@ -54,10 +54,10 @@
     </div>
 </template>
 <script>
-    import $ from 'jquery'
     import AssignRequest from './components/AssignRequest'
     import AssignUser from './components/AssignUser'
     import AssignMenu from './components/AssignMenu'
+    import _ from "lodash";
 
     export default {
         components: {
@@ -71,7 +71,7 @@
                 this.current.show = true;
             },
             edit(row) {
-                this.current.data = $.extend(true, {}, row);
+                this.current.data = _.cloneDeep(row);
                 this.current.show = true;
             },
             remove(row) {
@@ -91,7 +91,7 @@
                 }).post();
             },
             assignUser(row, index) {
-                this.userView.group = $.extend({}, true, row);
+                this.userView.group = _.cloneDeep(row);
                 this.userView._index = index;
                 this.userView.isShow = true;
                 this.userView.title = '[' + row.name + '] 用户分配';
@@ -102,7 +102,7 @@
                 this.tableLists.splice(this.userView._index, 1, group);
             },
             assignRequest(row, index) {
-                this.requestView.group = $.extend({}, true, row);
+                this.requestView.group = _.cloneDeep(row);
                 this.requestView._index = index;
                 this.requestView.isShow = true;
                 this.requestView.title = '[' + row.name + '] 请求分配';
@@ -113,7 +113,7 @@
                 this.tableLists.splice(this.requestView._index, 1, group);
             },
             showAssign(row,type){
-                this.assign.data = $.extend({}, true, row);
+                this.assign.data = _.cloneDeep(row);
                 this.assign.show[type] = true;
             },
             reload(){

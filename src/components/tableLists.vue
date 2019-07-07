@@ -14,14 +14,15 @@
             <slot name="options"></slot>
             <div slot="right">
                 <page @on-change="changePage" :current="page" :page-size="pageSizeData" :total="total" show-total
-                      show-elevator show-sizer @on-page-size-change="pageSizeChange" :page-size-opts="[10,20,50,100,200]"></page>
+                      show-elevator show-sizer @on-page-size-change="pageSizeChange"
+                      :page-size-opts="[10,20,50,100,200]"></page>
             </div>
         </page-bar>
     </div>
 </template>
 
 <script>
-    import $ from 'jquery'
+    import _ from 'lodash'
 
     export default {
         name: "tableLists",
@@ -29,7 +30,7 @@
             return {
                 page: 1,
                 total: 0,
-                pageSizeData:this.pageSize,
+                pageSizeData: this.pageSize,
             };
         },
         props: {
@@ -88,15 +89,15 @@
                 this.load();
             },
             pageSizeChange: function (size) {
-                this.pageSizeData  = size;
+                this.pageSizeData = size;
                 this.reload();
             },
             load() {
                 this.$request(this.requestApi).data({
-                    offset:(this.page -1) * this.pageSizeData,
-                    pageSize:this.pageSizeData,
-                    ...$.extend(true, {}, this.filter)
-                }).success((r)=>{
+                    offset: (this.page - 1) * this.pageSizeData,
+                    pageSize: this.pageSizeData,
+                    ..._.cloneDeep(this.filter)
+                }).success((r) => {
                     this.total = r.data['total'];
                     this.$emit('input', r.data['lists']);
                 }).get()
