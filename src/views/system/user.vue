@@ -13,8 +13,8 @@
                 <template slot-scope="{ row }" slot="_status">
                     {{ $fieldMapNameByValue(map.status,row.status) }}
                 </template>
-                <template slot-scope="{ row }" slot="_Authorize">
-                    <Button v-if="row.groups" size="small" @click="viewGroup(row)">{{row.groups.length}}个权限</Button>
+                <template slot-scope="{ row }" slot="_group">
+                    <Button size="small" @click="relateGroupInit(row)">关联权限组({{row.groups.length}})</Button>
                 </template>
                 <template slot-scope="{ row }" slot="op">
                     <Button size="small" type="primary" @click="edit(row)" style="margin-right: 5px">编辑</Button>
@@ -22,9 +22,6 @@
                 </template>
             </Table>
         </table-lists>
-        <Modal v-model="groupView.isShow" title="关联权限查看" footer-hide>
-            <Tag v-for="item in groupView.data" :key="item.id">{{item.name}}</Tag>
-        </Modal>
         <Modal v-model="current.show" :title="current.data['id'] ? '编辑用户' : '添加用户'" :width="500">
             <Form :label-width="80">
                 <FormItem label="用户名">
@@ -43,16 +40,23 @@
                 <Button type="primary" size="large" @click="save">提交</Button>
             </div>
         </Modal>
+        <Drawer :title="relateGroup.user.username+' 权限组关联'" v-model="relateGroup.show" width="300" :mask-closable="false">
+            <RelateGroup v-if="relateGroup.show" :userid="relateGroup.user.id" @reload="reload"></RelateGroup>
+        </Drawer>
     </div>
 </template>
 <script>
     import {userStatus} from './listsConst.js'
+    import RelateGroup from './components/RelateGroup'
     import _ from "lodash";
 
     export default {
+        components: {
+            RelateGroup,
+        },
         methods: {
             add() {
-                this.current.data = {status:1};
+                this.current.data = {status: 1};
                 this.current.show = true;
             },
             edit(row) {
@@ -69,29 +73,22 @@
                     }
                 });
             },
-            save(row) {
-                this.$request("/system/user/save").data({
-                    id: row.id || 0,
-                    username: row.username,
-                    password: row.password,
-                    status: row.status
-                }).showSuccessTip().success(() => {
+            save() {
+                this.$request("/system/user/save").data(this.current.data).showSuccessTip().success(() => {
                     this.current.show = false;
                     this.$refs.tableLists.reload(true);
                 }).post();
             },
-            viewGroup(row) {
-                this.groupView.data = row.groups.map(({id, name}) => {
-                    return {id, name}
-                });
-                this.groupView.isShow = true
-            },
+            relateGroupInit(row) {
+                this.relateGroup.user = _.cloneDeep(row);
+                this.relateGroup.show = true;
+            }
         },
         data() {
             return {
-                groupView: {
-                    isShow: false,
-                    data: [],
+                relateGroup: {
+                    show: false,
+                    user: {},
                 },
                 map: {
                     status: userStatus
@@ -135,8 +132,8 @@
                         width: 100
                     },
                     {
-                        title: '权限',
-                        slot: '_Authorize',
+                        title: '权限组',
+                        slot: '_group',
                         align: 'center',
                         width: 120
                     },

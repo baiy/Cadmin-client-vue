@@ -1,6 +1,5 @@
-import localStorage from "localStorage";
 import axios from "axios"
-import {config, serverUrl} from "../helper"
+import {actionUrl} from "../helper"
 import _ from "lodash";
 
 export const request = function ({type, data, dataType, url, success, error, complete}) {
@@ -24,6 +23,28 @@ export const request = function ({type, data, dataType, url, success, error, com
     });
 };
 
+export const requestSuccessHandle = function (vue, response, tipSuccess, tipError, success, error) {
+    if (response.status === "success") {
+        if (tipSuccess) {
+            vue.$Notice.success({
+                title: "操作提示",
+                desc: response.info,
+                duration: 5
+            });
+        }
+        success && success(response);
+    } else {
+        if (tipError) {
+            vue.$Notice.error({
+                title: '错误提示',
+                desc: response.info,
+                duration: 10
+            });
+        }
+        error && error(response);
+    }
+};
+
 class ActionRequest {
     _type = "get";
     _action = "";
@@ -37,14 +58,6 @@ class ActionRequest {
 
     constructor(vue) {
         this.vue = vue
-    }
-
-    static urlGenerate(action) {
-        let data = {"_action": action};
-        if (localStorage.getItem(config('ADMIN_TOKEN_NAME'))) {
-            data["_token"] = localStorage.getItem(config('ADMIN_TOKEN_NAME'))
-        }
-        return serverUrl(data)
     }
 
     dataType(dataType) {
@@ -101,27 +114,16 @@ class ActionRequest {
             type: this._type,
             dataType: this._dataType,
             data: this._data,
-            url: ActionRequest.urlGenerate(this._action),
+            url: actionUrl(this._action),
             success: (response) => {
-                if (response.status === "success") {
-                    if (this._tipSuccess) {
-                        this.vue.$Notice.success({
-                            title: "操作提示",
-                            desc: response.info,
-                            duration: 5
-                        });
-                    }
-                    this['_success'] && this['_success'](response);
-                } else {
-                    if (this._tipError) {
-                        this.vue.$Notice.error({
-                            title: '错误提示',
-                            desc: response.info,
-                            duration: 0
-                        });
-                    }
-                    this['_error'] && this['_error'](response);
-                }
+                requestSuccessHandle(
+                    this.vue,
+                    response,
+                    this._tipSuccess,
+                    this._tipError,
+                    this['_success'],
+                    this['_error']
+                );
             },
             error: () => {
                 this.vue.$Notice.error({title: '对不起您请求的数据不存在或者返回异常', duration: 5});

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <table-lists ref="tableLists" v-model="lists" :filter="filter" :filterType="2" requestApi="/system/authorize/lists">
+        <table-lists ref="tableLists" v-model="lists" :filter="filter" :filterType="2" requestApi="/system/group/lists">
             <template slot="filterContent">
                 <FormItem>
                     <Input type="text" v-model="filter.keyword" placeholder="搜索关键词"/>
@@ -32,8 +32,8 @@
                 </template>
             </Table>
         </table-lists>
-        <Drawer :title="assign.data.name+' 用户分配'" v-model="assign.show.user" width="300" :mask-closable="false">
-            <AssignUser v-if="assign.show.user" :groupId="assign.data.id" @reload="reload"></AssignUser>
+        <Drawer :title="assign.data.name+' 已关联用户'" v-model="assign.show.user" width="300" :mask-closable="false">
+            <AssignUser v-if="assign.show.user" :groupId="assign.data.id"></AssignUser>
         </Drawer>
         <Drawer :title="assign.data.name+' 菜单分配'" v-model="assign.show.menu" width="300" :mask-closable="false">
             <AssignMenu v-if="assign.show.menu" :groupId="assign.data.id" @reload="reload"></AssignMenu>
@@ -78,39 +78,17 @@
                 this.$Modal.confirm({
                     title: "确认要删除[" + row.name + "]权限?",
                     onOk: () => {
-                        this.$request('/system/authorize/remove').data({id: row.id}).showSuccessTip().success(() => {
+                        this.$request('/system/group/remove').data({id: row.id}).showSuccessTip().success(() => {
                             this.$refs.tableLists.reload(false);
                         }).get();
                     }
                 });
             },
             save() {
-                this.$request('/system/authorize/save').data(this.current.data).showSuccessTip().success(() => {
+                this.$request('/system/group/save').data(this.current.data).showSuccessTip().success(() => {
                     this.$refs.tableLists.reload(true);
                     this.current.show = false;
                 }).post();
-            },
-            assignUser(row, index) {
-                this.userView.group = _.cloneDeep(row);
-                this.userView._index = index;
-                this.userView.isShow = true;
-                this.userView.title = '[' + row.name + '] 用户分配';
-            },
-            assignUserSync(assign) {
-                let group = this.tableLists[this.userView._index];
-                group.users = assign;
-                this.tableLists.splice(this.userView._index, 1, group);
-            },
-            assignRequest(row, index) {
-                this.requestView.group = _.cloneDeep(row);
-                this.requestView._index = index;
-                this.requestView.isShow = true;
-                this.requestView.title = '[' + row.name + '] 请求分配';
-            },
-            assignRequestSync(assign) {
-                let group = this.tableLists[this.requestView._index];
-                group.requests = assign;
-                this.tableLists.splice(this.requestView._index, 1, group);
             },
             showAssign(row,type){
                 this.assign.data = _.cloneDeep(row);

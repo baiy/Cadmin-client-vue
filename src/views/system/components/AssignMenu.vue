@@ -37,13 +37,13 @@
                 return menu;
             },
             load() {
-                this.$request('/system/authorize/getMenuAssign').data({id: this.groupId}).success((r) => {
+                this.$request('/system/auth/getMenu').data({id: this.groupId}).success((r) => {
                     this.menu = this.tree(r.data, 0, 1);
                 }).get();
             },
             change() {
                 let menu = this.$refs.tree.getCheckedAndIndeterminateNodes();
-                let request = this.$request('/system/authorize/assignMenu').data({
+                let request = this.$request('/system/auth/assignMenu').data({
                     ids: menu.map(item => {
                         return item.menu.id;
                     }),

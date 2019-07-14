@@ -6,7 +6,8 @@ import {vueRequest} from './plugins/request'
 import store from './store'
 import router from './router'
 import pageBar from './components/pageBar'
-import tableLists from './components/tableLists.vue'
+import tableLists from './components/tableLists'
+import uploadFile from './components/uploadFile'
 import App from './App.vue'
 
 Vue.config.productionTip = false;
@@ -16,6 +17,7 @@ Vue.use(vueRequest);
 
 Vue.component('page-bar',pageBar);
 Vue.component('table-lists',tableLists);
+Vue.component('upload-file',uploadFile);
 
 new Vue({
     router,

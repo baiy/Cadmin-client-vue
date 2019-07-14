@@ -1,6 +1,6 @@
 <template>
     <div>
-        <table-lists ref="tableLists" v-model="data" :filter="filter" requestApi="/system/authorize/getRequestAssign">
+        <table-lists ref="tableLists" v-model="data" :filter="filter" requestApi="/system/auth/getRequest">
             <template slot="filterContent">
                 <FormItem>
                     <Input type="text" v-model="filter.keyword" placeholder="搜索关键词"/>
@@ -62,7 +62,7 @@
         },
         methods: {
             remove(row) {
-                this.$request('/system/authorize/removeRequest').data({
+                this.$request('/system/auth/removeRequest').data({
                     groupId: this.groupId,
                     requestId: row.id
                 }).success(() => {
@@ -70,7 +70,7 @@
                 }).get();
             },
             add(row) {
-                this.$request('/system/authorize/assignRequest').data({
+                this.$request('/system/auth/assignRequest').data({
                     groupId: this.groupId,
                     requestId: row.id
                 }).success(() => {

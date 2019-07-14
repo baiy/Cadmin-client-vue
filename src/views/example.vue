@@ -45,12 +45,16 @@
                 <Button type="success" icon="md-add">添加</Button>
             </div>
         </page-bar>
+        <Card title="文件上传">
+            <upload-file v-model="uploadFileUrl"></upload-file>
+        </Card>
     </div>
 </template>
 <script>
     export default {
         data() {
             return {
+                uploadFileUrl:"",
                 isSwitch: true,
                 select: {
                     date: "日期",

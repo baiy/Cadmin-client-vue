@@ -1,3 +1,5 @@
+import localStorage from "localStorage";
+
 export const trim = function (str, char, type) {
     if (char) {
         if (type === 'left') {
@@ -22,3 +24,11 @@ export const serverUrl = function (data = {}) {
     });
     return config('API_URL_PREFIX') + (query.length > 0 ? ('?' + query.join('&')) : "")
 };
+
+export const actionUrl = function (action) {
+    let data = {"_action": action};
+    if (localStorage.getItem(config('ADMIN_TOKEN_NAME'))) {
+        data["_token"] = localStorage.getItem(config('ADMIN_TOKEN_NAME'))
+    }
+    return serverUrl(data)
+}
