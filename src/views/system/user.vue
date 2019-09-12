@@ -82,6 +82,9 @@
             relateGroupInit(row) {
                 this.relateGroup.user = _.cloneDeep(row);
                 this.relateGroup.show = true;
+            },
+            reload(){
+                this.$refs.tableLists.reload(true);
             }
         },
         data() {
