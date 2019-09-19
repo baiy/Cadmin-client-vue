@@ -3,6 +3,8 @@
 </template>
 
 <script>
+    import { menuSort } from '../../../helper'
+
     export default {
         name: 'AssignMenu',
         data() {
@@ -38,7 +40,7 @@
             },
             load() {
                 this.$request('/system/auth/getMenu').data({id: this.groupId}).success((r) => {
-                    this.menu = this.tree(r.data, 0, 1);
+                    this.menu = this.tree(menuSort(r.data), 0, 1);
                 }).get();
             },
             change() {

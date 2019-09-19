@@ -49,6 +49,7 @@
 <script>
     import iconSelect from './components/iconSelect'
     import _ from "lodash";
+    import { menuSort } from '../../helper'
 
     export default {
         data() {
@@ -185,7 +186,7 @@
             },
             load() {
                 this.$request('/system/menu/lists').success((r)=>{
-                    this.lists = r.data
+                    this.lists = menuSort(r.data)
                 }).get()
             },
             tree(menus, pid, level) {
