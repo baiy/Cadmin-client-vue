@@ -6,6 +6,7 @@ export default {
         adminUser: {},
         adminMenu: [],
         adminAllUser: [],
+        adminRequest: [],
         currentMenu: "",
     },
     getters: {
@@ -17,6 +18,9 @@ export default {
         },
         getAdminAllUser(state) {
             return state.adminAllUser;
+        },
+        getAdminRequest(state) {
+            return state.adminRequest;
         },
         getCurrentMenu(state) {
             return state.currentMenu;
@@ -50,15 +54,19 @@ export default {
         setAdminMenu(state, menu) {
             state.adminMenu = menu ? menu : [];
         },
+        setAdminRequest(state, request) {
+            state.adminRequest = request ? request : [];
+        },
         setCurrentMenu(state, menu) {
             state.currentMenu = menu ? menu : {};
         }
     },
     actions: {
-        initialize({commit}, {user, menu, allUser}) {
+        initialize({commit}, {user, menu, allUser,request}) {
             commit('setAdminUser', user);
             commit('setAdminMenu', menu);
             commit('setAdminAllUser', allUser);
+            commit('setAdminRequest', request);
         },
         logout({commit}) {
             localStorage.removeItem(config('ADMIN_TOKEN_NAME'));

@@ -8,7 +8,7 @@
                         :format="format"
                         :max-size="maxSize"
                         :show-upload-list="false"
-                        :action="uploadApiUrl"
+                        :action="url"
                         :on-progress="onUploadProgress"
                         :on-success="onUploadSuccess"
                         :on-error="onUploadError"
@@ -33,12 +33,16 @@
     export default {
         name: "uploadFile",
         data() {
-            return {
-                uploadApiUrl: actionUrl('/upload'),
-            }
+            return {}
         },
         props: {
             value: {
+                type: String,
+                default: function () {
+                    return "";
+                }
+            },
+            action: {
                 type: String,
                 default: function () {
                     return "";
@@ -82,6 +86,11 @@
                 default() {
                     return {};
                 }
+            }
+        },
+        computed: {
+            url () {
+                return actionUrl(this.action)
             }
         },
         methods: {

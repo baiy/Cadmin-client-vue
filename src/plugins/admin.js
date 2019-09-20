@@ -2,6 +2,7 @@ import {config} from "../helper"
 // 后台插件注入
 export const adminVue = {
     install: function (Vue) {
+        // todo
         // 配置获取
         Vue.prototype.$config = function (key) {
             return config(key);

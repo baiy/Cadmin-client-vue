@@ -1,6 +1,6 @@
 <template>
     <div>
-        <table-lists ref="tableLists" v-model="lists" :filter="filter" :filterType="2" requestApi="/system/group/lists">
+        <table-lists ref="tableLists" v-model="lists" :filter="filter" :filterType="2" requestApi="/system/auth/lists">
             <template slot="filterContent">
                 <FormItem>
                     <Input type="text" v-model="filter.keyword" placeholder="搜索关键词"/>
@@ -12,17 +12,17 @@
             <Table :columns="columns" :data="lists" stripe>
                 <template slot-scope="{ row }" slot="_request">
                     <Button size="small" @click="showAssign(row,'request')">
-                        分配请求({{row['request_length']}})
+                        关联请求({{row.request.length}})
                     </Button>
                 </template>
-                <template slot-scope="{ row }" slot="_user">
-                    <Button size="small" @click="showAssign(row,'user')">
-                        分配用户({{row['user_length']}})
+                <template slot-scope="{ row }" slot="_userGroup">
+                    <Button size="small" @click="showAssign(row,'userGroup')">
+                        关联用户组({{row.userGroup.length}})
                     </Button>
                 </template>
                 <template slot-scope="{ row }" slot="_menu">
                     <Button size="small" @click="showAssign(row,'menu')">
-                        分配菜单({{row['menu_length']}})
+                        关联菜单({{row.menu.length}})
                     </Button>
                 </template>
                 <template slot-scope="{ row }" slot="op">
@@ -32,19 +32,22 @@
                 </template>
             </Table>
         </table-lists>
-        <Drawer :title="assign.data.name+' 已关联用户'" v-model="assign.show.user" width="300" :mask-closable="false">
-            <AssignUser v-if="assign.show.user" :groupId="assign.data.id"></AssignUser>
+        <Drawer :title="assign.data.name+' 菜单关联'" v-model="assign.show.menu" width="300" :mask-closable="false">
+            <AssignMenu v-if="assign.show.menu" :id="assign.data.id" @reload="reload"></AssignMenu>
         </Drawer>
-        <Drawer :title="assign.data.name+' 菜单分配'" v-model="assign.show.menu" width="300" :mask-closable="false">
-            <AssignMenu v-if="assign.show.menu" :groupId="assign.data.id" @reload="reload"></AssignMenu>
+        <Drawer :title="assign.data.name+' 请求关联'" v-model="assign.show.request" width="900" :mask-closable="false">
+            <AssignRequest v-if="assign.show.request" :id="assign.data.id" @reload="reload"></AssignRequest>
         </Drawer>
-        <Drawer :title="assign.data.name+' 请求分配'" v-model="assign.show.request" width="900" :mask-closable="false">
-            <AssignRequest v-if="assign.show.request" :groupId="assign.data.id" @reload="reload"></AssignRequest>
+        <Drawer :title="assign.data.name+' 用户组关联'" v-model="assign.show.userGroup" width="900" :mask-closable="false">
+            <AssignUserGroup v-if="assign.show.userGroup" :id="assign.data.id" @reload="reload"></AssignUserGroup>
         </Drawer>
-        <Modal v-model="current.show" :title="current.data['id'] ? '编辑权限' : '添加权限'" :width="400" @on-ok="save">
+        <Modal v-model="current.show" :title="current.data['id'] ? '编辑' : '添加'" :width="400" @on-ok="save">
             <Form :label-width="50">
                 <FormItem label="名称">
-                    <Input v-model="current.data.name" placeholder="权限名称"></Input>
+                    <Input v-model="current.data.name" type="text"></Input>
+                </FormItem>
+                <FormItem label="描述">
+                    <Input v-model="current.data.description" type="textarea"></Input>
                 </FormItem>
             </Form>
             <template slot="footer">
@@ -55,14 +58,14 @@
 </template>
 <script>
     import AssignRequest from './components/AssignRequest'
-    import AssignUser from './components/AssignUser'
+    import AssignUserGroup from './components/AssignUserGroup'
     import AssignMenu from './components/AssignMenu'
     import _ from "lodash";
 
     export default {
         components: {
             AssignRequest,
-            AssignUser,
+            AssignUserGroup,
             AssignMenu
         },
         methods: {
@@ -76,17 +79,17 @@
             },
             remove(row) {
                 this.$Modal.confirm({
-                    title: "确认要删除[" + row.name + "]权限?",
+                    title: "确认要删除[" + row.name + "]?",
                     onOk: () => {
-                        this.$request('/system/group/remove').data({id: row.id}).showSuccessTip().success(() => {
-                            this.$refs.tableLists.reload(false);
+                        this.$request('/system/auth/remove').data({id: row.id}).showSuccessTip().success(() => {
+                            this.reload()
                         }).get();
                     }
                 });
             },
             save() {
-                this.$request('/system/group/save').data(this.current.data).showSuccessTip().success(() => {
-                    this.$refs.tableLists.reload(true);
+                this.$request('/system/auth/save').data(this.current.data).showSuccessTip().success(() => {
+                    this.reload()
                     this.current.show = false;
                 }).post();
             },
@@ -104,7 +107,7 @@
                     data:{},
                     show:{
                         request:false,
-                        user:false,
+                        userGroup:false,
                         menu:false,
                     },
                 },
@@ -137,7 +140,7 @@
                     },
                     {
                         title: '用户',
-                        slot: '_user',
+                        slot: '_userGroup',
                         width: 140,
                         align: 'center',
                     },

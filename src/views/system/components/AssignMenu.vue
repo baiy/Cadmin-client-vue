@@ -13,7 +13,7 @@
             }
         },
         props: {
-            groupId: Number,
+            id: Number,
         },
         created() {
             this.load();
@@ -39,17 +39,17 @@
                 return menu;
             },
             load() {
-                this.$request('/system/auth/getMenu').data({id: this.groupId}).success((r) => {
+                this.$request('/system/auth/getMenu').data({id: this.id}).success((r) => {
                     this.menu = this.tree(menuSort(r.data), 0, 1);
                 }).get();
             },
             change() {
                 let menu = this.$refs.tree.getCheckedAndIndeterminateNodes();
                 let request = this.$request('/system/auth/assignMenu').data({
-                    ids: menu.map(item => {
+                    menuIds: menu.map(item => {
                         return item.menu.id;
                     }),
-                    groupId:this.groupId
+                    id:this.id
                 }).success(() => {
                     this.$emit('reload')
                 });

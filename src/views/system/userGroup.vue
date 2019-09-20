@@ -1,6 +1,6 @@
 <template>
     <div>
-        <table-lists ref="tableLists" v-model="lists" :filter="filter" :filterType="2" requestApi="/system/request/lists">
+        <table-lists ref="tableLists" v-model="lists" :filter="filter" :filterType="2" requestApi="/system/userGroup/lists">
             <template slot="filterContent">
                 <FormItem>
                     <Input type="text" v-model="filter.keyword" placeholder="搜索关键词" clearable/>
@@ -9,14 +9,11 @@
             <template slot="filterRight">
                 <Button type="success" icon="md-add" @click="add()">添加</Button>
             </template>
-            <Table ref="selection" :columns="columns" :data="lists" stripe>
-                <template slot-scope="{ row }" slot="type">
-                    {{ $fieldMapNameByValue(map.type,row.type) }}
-                </template>
-                <template slot-scope="{ row }" slot="_action">
-                    <Tooltip :content="row.call" :max-width="500">
-                        {{row.action}}
-                    </Tooltip>
+            <Table :columns="columns" :data="lists" stripe>
+                <template slot-scope="{ row }" slot="_user">
+                    <Button size="small" @click="showAssign(row,'user')">
+                        用户({{row.user.length}})
+                    </Button>
                 </template>
                 <template slot-scope="{ row }" slot="_auth">
                     <Poptip trigger="click" word-wrap transfer>
@@ -27,48 +24,40 @@
                         </template>
                     </Poptip>
                 </template>
-                <template slot-scope="{ row}" slot="op">
+                <template slot-scope="{ row }" slot="op">
                     <Button size="small" type="primary" @click="edit(row)" style="margin-right: 5px">编辑</Button>
-                    <Button size="small" type="error" @click="remove(row)" style="margin-right: 5px">删除</Button>
-                    <Button size="small" @click="copy(row)">复制</Button>
+                    <Button v-if="row.id" size="small" type="error" @click="remove(row)">删除</Button>
                 </template>
             </Table>
         </table-lists>
-        <Modal v-model="current.show" :title="current.data['id'] ? '编辑' : '添加'" :width="800">
+        <Modal v-model="current.show" :title="current.data['id'] ? '编辑' : '添加'" :width="500">
             <Form :label-width="80">
                 <FormItem label="名称">
-                    <Input v-model="current.data.name"></Input>
+                    <Input v-model="current.data.name" type="text"></Input>
                 </FormItem>
-                <FormItem label="ACTION">
-                    <Input v-model="current.data.action"></Input>
-                </FormItem>
-                <FormItem label="类型">
-                    <Select v-model="current.data.type">
-                        <Option v-for="item in map.type" :value="item.v" :key="item.v">{{ item.n }}</Option>
-                    </Select>
-                </FormItem>
-                <FormItem label="类型配置">
-                    <Input v-model="current.data['call']" type="textarea"></Input>
+                <FormItem label="描述">
+                    <Input v-model="current.data.description" type="textarea"></Input>
                 </FormItem>
             </Form>
             <div slot="footer">
                 <Button type="primary" size="large" @click="save">提交</Button>
             </div>
         </Modal>
+        <Drawer :title="assign.data.name+' 用户关联'" v-model="assign.show.user" width="900" :mask-closable="false">
+            <AssignUser v-if="assign.show.user" :id="assign.data.id" @reload="reload"></AssignUser>
+        </Drawer>
     </div>
 </template>
 <script>
-    import {requestType} from './listsConst'
     import _ from "lodash";
-
+    import AssignUser from './components/AssignUser'
     export default {
+        components: {
+            AssignUser
+        },
         methods: {
             add() {
-                this.current.data = {type:1};
-                this.current.show = true;
-            },
-            copy({type,name,action,call}) {
-                this.current.data = {type,name,action,call};
+                this.current.data = {};
                 this.current.show = true;
             },
             edit(row) {
@@ -77,31 +66,38 @@
             },
             remove(row) {
                 this.$Modal.confirm({
-                    title: "确认要删除[" + row.name + "]?",
+                    title: "确认要删除当前[" + row.name + "]?",
                     onOk: () => {
-                        this.$request('/system/request/remove').data({id:row.id}).showSuccessTip().success(()=>{
-                            this.reload()
-                        }).get();
+                        this.$request("/system/userGroup/remove").data({id: row.id}).showSuccessTip().success(() => {
+                            this.reload();
+                        }).get()
                     }
                 });
             },
             save() {
-                this.$request('/system/request/save').data(this.current.data).showSuccessTip().success(()=>{
-                    this.reload()
+                this.$request("/system/userGroup/save").data(this.current.data).showSuccessTip().success(() => {
                     this.current.show = false;
+                    this.reload();
                 }).post();
             },
             reload(){
                 this.$refs.tableLists.reload(true);
-            }
+            },
+            showAssign(row,type){
+                this.assign.data = _.cloneDeep(row);
+                this.assign.show[type] = true;
+            },
         },
         data() {
             return {
-                map: {
-                    type: requestType
+                assign:{
+                    data:{},
+                    show:{
+                        user:false
+                    },
                 },
                 filter: {
-                    keyword: "",
+                    keyword: ""
                 },
                 columns: [
                     {
@@ -113,38 +109,41 @@
                     {
                         title: '名称',
                         key: 'name',
-                        width: 260
-                    },
-                    {
-                        title: '类型',
-                        slot: 'type',
                         width: 150
                     },
                     {
-                        title: 'action',
-                        slot: '_action',
+                        title: '更新时间',
+                        key: 'create_time',
+                        align: 'center',
+                        width: 150
                     },
                     {
                         title: '创建时间',
-                        key: 'create_time',
+                        key: 'update_time',
                         align: 'center',
-                        width: 200
+                        width: 150
                     },
                     {
                         title: '权限',
                         slot: '_auth',
-                        width: 80
+                        align: 'center',
+                        width: 120
+                    },
+                    {
+                        title: '用户',
+                        slot: '_user',
+                        align: 'center',
+                        width: 120
                     },
                     {
                         title: '操作',
                         slot: 'op',
-                        width: 200
                     },
                 ],
                 lists: [],
-                current:{
-                    show:false,
-                    data:{},
+                current: {
+                    show: false,
+                    data: {},
                 },
             }
         },

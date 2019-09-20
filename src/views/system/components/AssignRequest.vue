@@ -6,15 +6,15 @@
                     <Input type="text" v-model="filter.keyword" placeholder="搜索关键词"/>
                 </FormItem>
             </template>
-            <Table :columns="columns" :data="data[0]" stripe height="270">
+            <Table :columns="columns" :data="data['noAssign']" stripe height="270">
                 <template slot-scope="{ row }" slot="op">
-                    <Button size="small" type="success" @click="add(row)">加入权限组</Button>
+                    <Button size="small" type="success" @click="add(row)">加入</Button>
                 </template>
             </Table>
         </table-lists>
-        <Table style="margin-top: 10px" :columns="columns" :data="data[1]" stripe height="270">
+        <Table style="margin-top: 10px" :columns="columns" :data="data['assign']" stripe height="270">
             <template slot-scope="{row,index}" slot="op">
-                <Button size="small" type="error" @click="remove(row,index)">移出权限组</Button>
+                <Button size="small" type="error" @click="remove(row,index)">移出</Button>
             </template>
         </Table>
     </div>
@@ -40,7 +40,6 @@
                     {
                         title: '名称',
                         key: 'name',
-                        width: 200
                     },
                     {
                         title: 'ACTION',
@@ -55,15 +54,15 @@
             }
         },
         props: {
-            groupId: Number,
+            id: Number,
         },
         created() {
-            this.filter.id = this.groupId;
+            this.filter.id = this.id;
         },
         methods: {
             remove(row) {
                 this.$request('/system/auth/removeRequest').data({
-                    groupId: this.groupId,
+                    id: this.id,
                     requestId: row.id
                 }).success(() => {
                     this.reload();
@@ -71,7 +70,7 @@
             },
             add(row) {
                 this.$request('/system/auth/assignRequest').data({
-                    groupId: this.groupId,
+                    id: this.id,
                     requestId: row.id
                 }).success(() => {
                     this.reload();

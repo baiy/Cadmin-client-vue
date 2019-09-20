@@ -14,7 +14,13 @@
                     {{ $fieldMapNameByValue(map.status,row.status) }}
                 </template>
                 <template slot-scope="{ row }" slot="_group">
-                    <Button size="small" @click="relateGroupInit(row)">关联权限组({{row.groups.length}})</Button>
+                    <Poptip trigger="click" word-wrap transfer>
+                        <Button size="small">用户组({{row.group.length}})</Button>
+                        <template slot="content">
+                            <div v-if="row.group.length < 1">暂无</div>
+                            <div v-for="group in row.group" :key="group.id">{{group.id}}:{{group.name}}</div>
+                        </template>
+                    </Poptip>
                 </template>
                 <template slot-scope="{ row }" slot="op">
                     <Button size="small" type="primary" @click="edit(row)" style="margin-right: 5px">编辑</Button>
@@ -22,7 +28,7 @@
                 </template>
             </Table>
         </table-lists>
-        <Modal v-model="current.show" :title="current.data['id'] ? '编辑用户' : '添加用户'" :width="500">
+        <Modal v-model="current.show" :title="current.data['id'] ? '编辑' : '添加'" :width="500">
             <Form :label-width="80">
                 <FormItem label="用户名">
                     <Input v-model="current.data.username" type="text"></Input>
@@ -40,20 +46,12 @@
                 <Button type="primary" size="large" @click="save">提交</Button>
             </div>
         </Modal>
-        <Drawer :title="relateGroup.user.username+' 权限组关联'" v-model="relateGroup.show" width="300" :mask-closable="false">
-            <RelateGroup v-if="relateGroup.show" :userid="relateGroup.user.id" @reload="reload"></RelateGroup>
-        </Drawer>
     </div>
 </template>
 <script>
     import {userStatus} from './listsConst.js'
-    import RelateGroup from './components/RelateGroup'
     import _ from "lodash";
-
     export default {
-        components: {
-            RelateGroup,
-        },
         methods: {
             add() {
                 this.current.data = {status: 1};
@@ -61,14 +59,15 @@
             },
             edit(row) {
                 this.current.data = _.cloneDeep(row);
+                this.current.data.password = "";
                 this.current.show = true;
             },
             remove(row) {
                 this.$Modal.confirm({
-                    title: "确认要删除当前[" + row.username + "]请求?",
+                    title: "确认要删除当前[" + row.username + "]?",
                     onOk: () => {
                         this.$request("/system/user/remove").data({id: row.id}).showSuccessTip().success(() => {
-                            this.$refs.tableLists.reload(true);
+                            this.reload();
                         }).get()
                     }
                 });
@@ -76,12 +75,8 @@
             save() {
                 this.$request("/system/user/save").data(this.current.data).showSuccessTip().success(() => {
                     this.current.show = false;
-                    this.$refs.tableLists.reload(true);
+                    this.reload();
                 }).post();
-            },
-            relateGroupInit(row) {
-                this.relateGroup.user = _.cloneDeep(row);
-                this.relateGroup.show = true;
             },
             reload(){
                 this.$refs.tableLists.reload(true);
@@ -89,10 +84,6 @@
         },
         data() {
             return {
-                relateGroup: {
-                    show: false,
-                    user: {},
-                },
                 map: {
                     status: userStatus
                 },
@@ -135,7 +126,7 @@
                         width: 100
                     },
                     {
-                        title: '权限组',
+                        title: '用户组',
                         slot: '_group',
                         align: 'center',
                         width: 120

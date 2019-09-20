@@ -13,7 +13,7 @@
             </Col>
             <Col span="15">
                 <Card v-if="ieEditIng">
-                    <p slot="title">{{current.id ? '编辑菜单' : '添加菜单'}}</p>
+                    <p slot="title">{{current.id ? '编辑' : '添加'}}</p>
                     <div slot="extra">
                         <Button size="small" type="error" style="margin-right: 10px" @click="cancelSetCurrent()">放弃
                         </Button>

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <table-lists ref="tableLists" v-model="data" :filter="filter" requestApi="/system/userGroup/getUser">
+        <table-lists ref="tableLists" v-model="data" :filter="filter" requestApi="/system/auth/getUserGroup">
             <template slot="filterContent">
                 <FormItem>
                     <Input type="text" v-model="filter.keyword" placeholder="搜索关键词"/>
@@ -19,10 +19,9 @@
         </Table>
     </div>
 </template>
-
 <script>
     export default {
-        name: 'AssignUser',
+        name: 'AssignUserGroup',
         data() {
             return {
                 data: {},
@@ -39,7 +38,7 @@
                     },
                     {
                         title: '名称',
-                        key: 'username',
+                        key: 'name',
                     },
                     {
                         title: '操作',
@@ -57,17 +56,17 @@
         },
         methods: {
             remove(row) {
-                this.$request('/system/userGroup/removeUser').data({
+                this.$request('/system/auth/removeUserGroup').data({
                     id: this.id,
-                    userId: row.id
+                    userGroupId: row.id
                 }).success(() => {
                     this.reload();
                 }).get();
             },
             add(row) {
-                this.$request('/system/userGroup/assignUser').data({
+                this.$request('/system/auth/assignUserGroup').data({
                     id: this.id,
-                    userId: row.id
+                    userGroupId: row.id
                 }).success(() => {
                     this.reload();
                 }).get();

@@ -35,7 +35,7 @@
         },
         props: {
             value: {
-                type: Array,
+                type: [Array,Object],
                 default: function () {
                     return []
                 }
