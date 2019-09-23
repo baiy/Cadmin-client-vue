@@ -40,6 +40,7 @@
 
 <script>
     import _ from "lodash";
+    import { config } from '../../../helper'
 
     let tree = function (menus, pid) {
         let menu = [];
@@ -63,7 +64,7 @@
         },
         computed: {
             siteName() {
-                return this.$config('SITE_NAME');
+                return config('SITE_NAME');
             },
             menus() {
                 return tree(_.cloneDeep(this.$store.getters.getAdminMenu), 0);

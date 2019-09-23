@@ -6,10 +6,12 @@
 </template>
 
 <script>
+    import { config } from '../helper'
+
     export default {
         created() {
-            if (this.$config('INDEX_URL') !== "/") {
-                this.$router.replace(this.$config('INDEX_URL'))
+            if (config('INDEX_URL') !== "/") {
+                this.$router.replace(config('INDEX_URL'))
             }
         },
     }

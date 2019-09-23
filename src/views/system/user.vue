@@ -11,7 +11,7 @@
             </template>
             <Table :columns="columns" :data="lists" stripe>
                 <template slot-scope="{ row }" slot="_status">
-                    {{ $fieldMapNameByValue(map.status,row.status) }}
+                    <field-map :value="row.status" :map="map.status"></field-map>
                 </template>
                 <template slot-scope="{ row }" slot="_group">
                     <Poptip trigger="click" word-wrap transfer>

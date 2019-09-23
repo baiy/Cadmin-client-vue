@@ -27,9 +27,10 @@ export const serverUrl = function (data = {}) {
 }
 
 export const actionUrl = function (action) {
-    let data = { '_action': action }
+    let data = {}
+    data[config('API_ACTION_NAME')] = action
     if (localStorage.getItem(config('ADMIN_TOKEN_NAME'))) {
-        data['_token'] = localStorage.getItem(config('ADMIN_TOKEN_NAME'))
+        data[config('API_TOKEN_NAME')] = localStorage.getItem(config('ADMIN_TOKEN_NAME'))
     }
     return serverUrl(data)
 }

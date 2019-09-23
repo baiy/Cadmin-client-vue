@@ -11,7 +11,7 @@
             </template>
             <Table ref="selection" :columns="columns" :data="lists" stripe>
                 <template slot-scope="{ row }" slot="type">
-                    {{ $fieldMapNameByValue(map.type,row.type) }}
+                    <field-map :value="row.type" :map="map.type"></field-map>
                 </template>
                 <template slot-scope="{ row }" slot="_action">
                     <Tooltip :content="row.call" :max-width="500">
