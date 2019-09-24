@@ -9,7 +9,7 @@ export const request = function ({ type, data, dataType,contentType, url, succes
     let config = {
         method: type || 'get',
         url: url,
-        headers: { 'content-type': contentType },
+        headers: { 'content-type': contentType || "application/x-www-form-urlencoded" },
         responseType: dataType || 'json'
     }
     if (_.indexOf(['POST', 'PUT', 'PATCH'], type) === -1) {

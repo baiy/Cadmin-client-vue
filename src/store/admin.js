@@ -7,7 +7,7 @@ export default {
         adminMenu: [],
         adminAllUser: [],
         adminRequest: [],
-        currentMenu: "",
+        currentMenu: {},
     },
     getters: {
         getAdminUser(state) {
@@ -26,7 +26,7 @@ export default {
             return state.currentMenu;
         },
         getCurrentMenuIds(state) {
-            if (state.currentMenu){
+            if (Object.keys(state.currentMenu).length !== 0){
                 let ids = [state.currentMenu.id];
                 let current = state.currentMenu;
                 const allMenu = state.adminMenu;

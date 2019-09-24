@@ -27,7 +27,7 @@
                             <Input v-model="current.parent_id" placeholder="父菜单ID 0为一级菜单"></Input>
                         </FormItem>
                         <FormItem label="链接">
-                            <Input v-model="current.url" placeholder="叶子节点的菜单url不能为空，非叶子节点要置空"></Input>
+                            <Input v-model="current.url" placeholder="页面型菜单链接不能为空，目录型菜单链接要置空"></Input>
                         </FormItem>
                         <FormItem label="图标">
                             <Icon v-if="current.icon" :type="current.icon" size="24" style="margin-right: 10px">
@@ -218,7 +218,7 @@
                     onOk: () => {
                         this.$request('/system/menu/remove').data({id: data.menu.id}).showSuccessTip().success(() => {
                             this.load();
-                        }).post();
+                        }).get();
                     }
                 });
             },
@@ -260,8 +260,8 @@
                 let before = brother[currentIndex - 1];
                 brother.splice(currentIndex, 1, before);
                 brother.splice(currentIndex - 1, 1, current);
-                let menus = brother.map(function ({id, name}, sort) {
-                    return {id, sort, name}
+                let menus = brother.map(function ({id}, sort) {
+                    return {id, sort}
                 });
                 this.$request('/system/menu/sort').data({menus}).showSuccessTip().success(() => this.load()).post()
             },
