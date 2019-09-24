@@ -34,7 +34,7 @@
                     <Input v-model="current.data.username" type="text"></Input>
                 </FormItem>
                 <FormItem label="密码">
-                    <Input v-model="current.data.password" type="password"></Input>
+                    <Input v-model="current.data.password" type="text"></Input>
                 </FormItem>
                 <FormItem label="状态">
                     <Select v-model="current.data.status">

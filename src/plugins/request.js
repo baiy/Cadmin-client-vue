@@ -4,12 +4,12 @@ import qs from 'qs'
 import { actionUrl } from '../helper'
 import _ from 'lodash'
 
-export const request = function ({ type, data, dataType, url, success, error, complete }) {
+export const request = function ({ type, data, dataType,contentType, url, success, error, complete }) {
     type = (type || 'get').toUpperCase()
     let config = {
         method: type || 'get',
         url: url,
-        headers: { 'content-type': 'application/x-www-form-urlencoded' },
+        headers: { 'content-type': contentType },
         responseType: dataType || 'json'
     }
     if (_.indexOf(['POST', 'PUT', 'PATCH'], type) === -1) {
@@ -55,6 +55,7 @@ class ActionRequest {
     _tipSuccess = false
     _tipError = true
     _dataType = 'json'
+    _contentType = 'application/x-www-form-urlencoded'
     _success = null
     _error = null
     _complete = null
@@ -65,6 +66,11 @@ class ActionRequest {
 
     dataType (dataType) {
         this._dataType = dataType
+        return this
+    }
+
+    contentType (contentType) {
+        this._contentType = contentType
         return this
     }
 
@@ -116,6 +122,7 @@ class ActionRequest {
         request({
             type: this._type,
             dataType: this._dataType,
+            contentType: this._contentType,
             data: this._data,
             url: actionUrl(this._action),
             success: (response) => {
