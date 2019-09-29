@@ -11,7 +11,7 @@
             </template>
             <Table ref="selection" :columns="columns" :data="lists" stripe>
                 <template slot-scope="{ row }" slot="type">
-                    <field-map :value="row.type" :map="map.type"></field-map>
+                    <field-map :value="row.type" :map="type"></field-map>
                 </template>
                 <template slot-scope="{ row }" slot="_action">
                     <Tooltip :content="row.call" :max-width="500">
@@ -44,7 +44,7 @@
                 </FormItem>
                 <FormItem label="类型">
                     <Select v-model="current.data.type">
-                        <Option v-for="item in map.type" :value="item.v" :key="item.v">{{ item.n }}</Option>
+                        <Option v-for="item in type" :value="item.v" :key="item.v">{{ item.n }}</Option>
                     </Select>
                 </FormItem>
                 <FormItem label="类型配置">
@@ -58,13 +58,24 @@
     </div>
 </template>
 <script>
-    import {requestType} from './listsConst'
     import _ from "lodash";
 
     export default {
+        computed:{
+            type() {
+                return this.requestType.map((item)=>{
+                    return {v:item.type,n:item.name}
+                });
+            }
+        },
+        created(){
+          this.$request('/system/request/type').success((r)=>{
+              this.requestType = r.data
+          }).get()
+        },
         methods: {
             add() {
-                this.current.data = {type:1};
+                this.current.data = {type:"default"};
                 this.current.show = true;
             },
             copy({type,name,action,call}) {
@@ -97,9 +108,7 @@
         },
         data() {
             return {
-                map: {
-                    type: requestType
-                },
+                requestType: [],
                 filter: {
                     keyword: "",
                 },

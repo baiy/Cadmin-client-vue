@@ -2,7 +2,3 @@ export const userStatus = [
     {v: 1, n: '启用'},
     {v: 2, n: '禁用'}
 ];
-
-export const requestType = [
-    {v: 1, n: '本地调用'},
-]
