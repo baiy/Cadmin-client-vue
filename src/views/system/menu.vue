@@ -250,8 +250,8 @@
                 let next = brother[currentIndex + 1];
                 brother.splice(currentIndex, 1, next);
                 brother.splice(currentIndex + 1, 1, current);
-                let menus = brother.map(function ({id, name}, sort) {
-                    return {id, sort, name}
+                let menus = brother.map(function ({id}, sort) {
+                    return {id, sort}
                 });
                 this.$request('/system/menu/sort').data({menus}).showSuccessTip().success(() => this.load()).post()
             },
