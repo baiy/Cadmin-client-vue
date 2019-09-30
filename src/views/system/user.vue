@@ -15,10 +15,10 @@
                 </template>
                 <template slot-scope="{ row }" slot="_group">
                     <Poptip trigger="click" word-wrap transfer>
-                        <Button size="small">用户组({{row.group.length}})</Button>
+                        <Button size="small">用户组({{row.userGroup.length}})</Button>
                         <template slot="content">
-                            <div v-if="row.group.length < 1">暂无</div>
-                            <div v-for="group in row.group" :key="group.id">{{group.id}}:{{group.name}}</div>
+                            <div v-if="row.userGroup.length < 1">暂无</div>
+                            <div v-for="group in row.userGroup" :key="group.id">{{group.id}}:{{group.name}}</div>
                         </template>
                     </Poptip>
                 </template>
