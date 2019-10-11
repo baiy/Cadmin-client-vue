@@ -24,6 +24,8 @@ npm run build
 ### 配置
 配置文件地址:`./env`
 
+> 使用vue-cli的[环境变量](https://cli.vuejs.org/zh/guide/mode-and-env.html)实现
+
 | 配置变量名 | 说明| 
 | --- | --- |
 |VUE_APP_ADMIN_TOKEN_NAME|前端localStorage存储 `token` 名称|
@@ -181,7 +183,7 @@ request({
 let map = [{v: 1, n: '启用'},{v: 2, n: '禁用'}]
 ```
 ```html
-<field-map value="2" :map="map" valueField="v" descField=n"" />
+<field-map value="2" :map="map" valueField="v" descField="n" />
 ```
 > 以上代码输出:`禁用`
 >
