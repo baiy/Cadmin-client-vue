@@ -62,6 +62,7 @@
 </template>
 <script>
     import _ from 'lodash'
+    import marked from 'marked'
 
     export default {
         computed: {
@@ -77,7 +78,7 @@
                         description = item.description
                     }
                 })
-                return description
+                return marked(description)
             }
         },
         created () {
