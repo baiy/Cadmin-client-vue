@@ -1,14 +1,19 @@
 Cadmin的客户端实现 vue+iview
 
-项目地址: <https://github.com/baiy/Cadmin-client-vue>
+> 项目地址: [[github](https://github.com/baiy/Cadmin-client-vue)] [[gitee](https://gitee.com/baiy/Cadmin-client-vue)]
+>
+> 在线文档地址: <https://baiy.github.io/Cadmin/>
 
 ### 依赖
 * [vue](https://cn.vuejs.org)
-* [iview](https://www.iviewui.com)
-* [localStorage](#)
+* [iview](http://v3.iviewui.com/)
+* localStorage
 * [axios](https://github.com/axios/axios)
+* [lodash](https://lodash.com/)
 * `vue-router` 
 * `vuex`
+
+> 注意:当前使用的是`iview 3` 
 
 ### 安装
 
@@ -146,7 +151,7 @@ request({
 
 ### 内置组件
 
-开发过程除了可以使用[iviewui](https://www.iviewui.com)的组件外, 系统还内置一些与后台开发常用的组件
+开发过程除了可以使用[iviewui](http://v3.iviewui.com/)的组件外, 系统还内置一些与后台开发常用的组件
 
 #### 显示后台指定用户名称
 ```html
