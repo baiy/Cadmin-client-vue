@@ -23,6 +23,7 @@
                                 <Icon type="ios-arrow-down"></Icon>
                             </a>
                             <DropdownMenu slot="list">
+                                <DropdownItem name="userSetting">用户设置</DropdownItem>
                                 <DropdownItem name="logout">退出</DropdownItem>
                             </DropdownMenu>
                         </Dropdown>
@@ -32,6 +33,7 @@
                     </Content>
                 </Layout>
             </Layout>
+            <userSetting ref="userSetting"></userSetting>
         </div>
     </div>
 </template>
@@ -39,13 +41,15 @@
 <script>
     import Login from './views/system/components/Login.vue'
     import LeftMenu from './views/system/components/LeftMenu.vue'
+    import userSetting from './views/system/components/userSetting.vue'
     import {setTitle} from './router'
     import _ from 'lodash'
 
     export default {
         components: {
             Login,
-            LeftMenu
+            LeftMenu,
+            userSetting
         },
         data() {
             return {
@@ -110,6 +114,9 @@
                     this.$store.dispatch('logout');
                     setTitle(this.$route)
                 }).get();
+            },
+            userSetting() {
+                this.$refs.userSetting.show();
             },
             collapsedSider() {
                 this.$refs.side1.toggleCollapse();
