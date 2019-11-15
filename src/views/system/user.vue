@@ -41,6 +41,9 @@
                         <Option v-for="item in map.status" :value="item.v" :key="item.v">{{ item.n }}</Option>
                     </Select>
                 </FormItem>
+                <FormItem label="描述">
+                    <Input v-model="current.data.description" type="textarea"></Input>
+                </FormItem>
             </Form>
             <div slot="footer">
                 <Button type="primary" size="large" @click="save">提交</Button>

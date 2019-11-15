@@ -18,6 +18,10 @@ export const config = function (key) {
     return process.env['VUE_APP_' + key]
 }
 
+export const token = function () {
+    return localStorage.getItem(config('ADMIN_TOKEN_NAME'))
+}
+
 export const serverUrl = function (data = {}) {
     let query = []
     Object.keys(data).forEach((item) => {
@@ -29,8 +33,8 @@ export const serverUrl = function (data = {}) {
 export const actionUrl = function (action) {
     let data = {}
     data[config('API_ACTION_NAME')] = action
-    if (localStorage.getItem(config('ADMIN_TOKEN_NAME'))) {
-        data[config('API_TOKEN_NAME')] = localStorage.getItem(config('ADMIN_TOKEN_NAME'))
+    if (token()) {
+        data[config('API_TOKEN_NAME')] = token()
     }
     return serverUrl(data)
 }

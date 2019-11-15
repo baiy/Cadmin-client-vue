@@ -37,7 +37,7 @@ npm run build
 |VUE_APP_API_URL_PREFIX|服务端数据请求入口地址|
 |VUE_APP_API_ACTION_NAME|服务端数据请求地址中 `action` 变量名|
 |VUE_APP_API_TOKEN_NAME|服务端数据请求地址中 `token` 变量名|
-|VUE_APP_INDEX_URL|用户登录后模板现在页面|
+|VUE_APP_INDEX_URL|登录后首页(`/`)跳转地址|
 |VUE_APP_SITE_NAME|站点名称 页面左上角|
 |VUE_APP_SITE_TITLE_TPL|页面标题模板|
 
@@ -77,14 +77,15 @@ let name = config('SITE_NAME')
 ### store
 > `/src/store/admin.js`
 
-| - | 路由地址| 
+| - | 数据信息| 
 | --- | --- |
 |adminUser|当前用户信息|
 |adminMenu|用户已授权菜单列表|
 |adminAllUser|后台所有用户列表|
 |adminRequest|用户已授权请求列表|
+|adminAuth|用户关联权限|
+|adminUserGroup|用户关联用户组|
 |currentMenu|当前页面菜单信息|
-
 
 ### 服务端请求
 
