@@ -43,6 +43,7 @@
     import LeftMenu from './views/system/components/LeftMenu.vue'
     import userSetting from './views/system/components/userSetting.vue'
     import {setTitle} from './router'
+    import {token} from './helper'
     import _ from 'lodash'
 
     export default {
@@ -97,14 +98,19 @@
         methods: {
             // 初始化系统
             initialize() {
-                this.$request("/load").success((r) => {
-                    this.$store.dispatch('initialize', r.data)
-                    setTitle(this.$route)
-                }).error(() => {
-                    this.$store.dispatch('logout');
-                }).complete(() => {
+                if (token()){
+                    this.$request("/load").success((r) => {
+                        this.$store.dispatch('initialize', r.data)
+                        setTitle(this.$route)
+                    }).error(() => {
+                        this.$store.dispatch('logout');
+                    }).complete(() => {
+                        document.querySelector("#loading").remove();
+                    }).get();
+                }
+                else{
                     document.querySelector("#loading").remove();
-                }).get();
+                }
             },
             selectDropdown(name) {
                 this[name]();
