@@ -6,12 +6,12 @@
                     <p slot="title">用户登录</p>
                     <Form ref="form" :model="form" :rules="rule">
                         <FormItem prop="username">
-                            <Input size="large" type="text" v-model="form.username" placeholder="用户名">
+                            <Input size="large" type="text" v-model="form.username" placeholder="用户名 默认:admin">
                                 <Icon type="ios-person-outline" slot="prepend"></Icon>
                             </Input>
                         </FormItem>
                         <FormItem prop="password">
-                            <Input size="large" type="password" v-model="form.password" placeholder="密码">
+                            <Input size="large" type="password" v-model="form.password" placeholder="密码 默认:123456">
                                 <Icon type="ios-lock-outline" slot="prepend"></Icon>
                             </Input>
                         </FormItem>

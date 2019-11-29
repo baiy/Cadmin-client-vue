@@ -92,6 +92,11 @@
         },
         mounted() {
             this.$router.onReady(() => {
+                this.$Message.info({
+                    content: '注意:服务端每个小时会自动重置数据库,重置后需要重新登录',
+                    duration: 3600,
+                    top:1
+                });
                 this.initialize();
             });
         },
