@@ -1,6 +1,6 @@
 import Vue from 'vue'
-import iView from 'iview'
-import 'iview/dist/styles/iview.css'
+import ViewUI from 'view-design';
+import 'view-design/dist/styles/iview.css';
 import {vueRequest} from './plugins/request'
 import store from './store'
 import router from './router'
@@ -13,7 +13,7 @@ import fieldMap from './components/fieldMap'
 import App from './App.vue'
 
 Vue.config.productionTip = false;
-Vue.use(iView);
+Vue.use(ViewUI);
 Vue.use(vueRequest);
 
 Vue.component('page-bar',pageBar);

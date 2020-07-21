@@ -115,13 +115,13 @@
                         title: '更新时间',
                         key: 'create_time',
                         align: 'center',
-                        width: 150
+                        width: 200
                     },
                     {
                         title: '创建时间',
                         key: 'update_time',
                         align: 'center',
-                        width: 150
+                        width: 200
                     },
                     {
                         title: '权限',

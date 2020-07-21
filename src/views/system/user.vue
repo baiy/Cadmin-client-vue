@@ -115,13 +115,13 @@
                         title: '最后登录时间',
                         key: 'last_login_time',
                         align: 'center',
-                        width: 150
+                        width: 200
                     },
                     {
                         title: '创建时间',
                         key: 'create_time',
                         align: 'center',
-                        width: 150
+                        width: 200
                     },
                     {
                         title: '状态',
