@@ -64,12 +64,13 @@
             nav() {
                 let menus = [];
                 let ids = this.$store.getters.getCurrentMenuIds;
-                this.$store.getters.getAdminMenu.forEach((item) => {
-                    if (_.indexOf(ids, item.id) !== -1) {
-                        menus.push(item)
-                    }
-                });
-
+                for(let i = 0;i<ids.length;i++){
+                    this.$store.getters.getAdminMenu.forEach((item) => {
+                        if (ids[i] === item.id) {
+                            menus.push(item)
+                        }
+                    });
+                }
                 return menus
             },
             user() {
