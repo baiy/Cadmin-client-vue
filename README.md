@@ -175,7 +175,7 @@ request({
 
 #### 输入框式文件上传
 ```html
-<upload-file v-model="url" action="/upload"></upload-file>
+<upload-file v-model="url" action="/upload" append="{}"></upload-file>
 ```
 
 #### 列表页组件
@@ -194,3 +194,12 @@ let map = [{v: 1, n: '启用'},{v: 2, n: '禁用'}]
 > 以上代码输出:`禁用`
 >
 > 该组件常与映射字段的页面输出  `valueField`/`descField` 为可选
+
+#### 下拉框组件
+```js
+let map = [{v: 1, n: '启用'},{v: 2, n: '禁用'}]
+```
+```html
+ <field-select :map="map.server" v-model="value" default-desc="默认描述" valueField="v" descField="n" />
+```
+> `valueField`/`descField` 为可选

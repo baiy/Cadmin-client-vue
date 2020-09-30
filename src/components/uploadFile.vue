@@ -4,7 +4,7 @@
             <div slot="append">
                 <Upload
                         :name="name"
-                        :data="{dir:dir}"
+                        :data="append"
                         :format="format"
                         :headers="headers"
                         :max-size="maxSize"
@@ -57,10 +57,10 @@ export default {
                 return "file";
             }
         },
-        dir: {
-            type: String,
+        append: {
+            type: Object,
             default: function () {
-                return "";
+                return {};
             }
         },
         format: {
