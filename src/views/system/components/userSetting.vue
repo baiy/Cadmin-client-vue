@@ -1,6 +1,9 @@
 <template>
   <Modal v-model="modelShow" title="用户设置" :width="500">
     <Form :label-width="80">
+      <FormItem label="用户ID">
+        {{userId}}
+      </FormItem>
       <FormItem label="用户名">
         <Input v-model="current.username" type="text"></Input>
       </FormItem>
@@ -23,6 +26,7 @@
         data () {
             return {
                 modelShow: false,
+                userId:"",
                 current: {
                     username: '',
                     password: '',
@@ -46,6 +50,7 @@
                     repeatPassword: '',
                 }
                 this.current.username = this.$store.getters.getAdminUser.username
+                this.userId = this.$store.getters.getAdminUser.id
                 this.modelShow = true
             }
         }
