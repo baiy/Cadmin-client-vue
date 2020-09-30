@@ -9,7 +9,7 @@
                 </Sider>
                 <Layout>
                     <Header style="padding: 0;height:50px;line-height: 50px" class="layout-header-bar">
-                        <Icon @click.native="collapsedSider" :class="rotateIcon" :style="{margin: '0 10px 0 20px'}"
+                        <Icon @click.native="collapsedSider" :class="rotateIcon" :style="{margin: '0 10px 0 20px',verticalAlign:'-.31em'}"
                               type="md-menu" size="28"></Icon>
                         <Breadcrumb class="nav">
                             <BreadcrumbItem v-for="item in nav" :key="item.id">
@@ -44,7 +44,6 @@
     import userSetting from './views/system/components/userSetting.vue'
     import {setTitle} from './router'
     import {token} from './helper'
-    import _ from 'lodash'
 
     export default {
         components: {

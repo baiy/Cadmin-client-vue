@@ -9,7 +9,7 @@
             <template slot="filterRight">
                 <Button type="success" icon="md-add" @click="add()">添加</Button>
             </template>
-            <Table :columns="columns" :data="lists" stripe>
+            <Table :columns="columns" :data="lists" stripe border>
                 <template slot-scope="{ row }" slot="_user">
                     <Button size="small" @click="showAssign(row,'user')">
                         用户({{row.user.length}})

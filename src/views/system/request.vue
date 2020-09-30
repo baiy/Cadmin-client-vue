@@ -9,7 +9,7 @@
       <template slot="filterRight">
         <Button type="success" icon="md-add" @click="add()">添加</Button>
       </template>
-      <Table ref="selection" :columns="columns" :data="lists" stripe>
+      <Table ref="selection" :columns="columns" :data="lists" stripe border>
         <template slot-scope="{ row }" slot="type">
           <field-map :value="row.type" :map="type"></field-map>
         </template>
